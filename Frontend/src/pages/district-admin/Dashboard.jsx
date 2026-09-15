@@ -17,13 +17,6 @@ import {
   ArrowRight
 } from 'lucide-react';
 import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -48,24 +41,6 @@ export function DistrictAdminDashboard() {
     pendingPayments: 1
   });
   const [loading, setLoading] = useState(false);
-
-  // Revenue chart for the district
-  const revenueData = [
-    { month: 'Jan', amount: 185000 },
-    { month: 'Feb', amount: 240000 },
-    { month: 'Mar', amount: 290000 },
-    { month: 'Apr', amount: 310000 },
-    { month: 'May', amount: 325410 },
-  ];
-
-  // Orders volume chart
-  const ordersVolumeData = [
-    { month: 'Jan', orders: 120 },
-    { month: 'Feb', orders: 180 },
-    { month: 'Mar', orders: 240 },
-    { month: 'Apr', orders: 210 },
-    { month: 'May', orders: 320 },
-  ];
 
   const donutData = [
     { name: 'Silver Tier', value: 2, color: '#94a3b8' },
@@ -266,51 +241,64 @@ export function DistrictAdminDashboard() {
         </div>
       </div>
 
-      {/* Row 2: Charts & Geographic Divisions */}
+      {/* Row 2: Assigned Divisions & Membership Tier Share */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Monthly Revenue Inflow for District */}
-        <div className="lg:col-span-8 admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
+        {/* Assigned Divisions in District */}
+        <div className="lg:col-span-8 admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                Monthly Revenue Inflow ({user?.district || 'Salem'})
-              </span>
-              <p className="text-[11px] text-slate-500">Aggregated from all assigned divisions</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Assigned Divisions in {user?.district || 'Salem'}
+              </h3>
+              <p className="text-xs text-slate-500">Flow: District &rarr; Division &rarr; Pincode</p>
             </div>
-            <span className="text-base font-black text-slate-900 dark:text-white">₹3,25,410</span>
+            <button
+              onClick={() => navigate('/district-admin/divisions')}
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+            >
+              <span>Manage Divisions</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
           </div>
 
-          <div className="h-56 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="districtRevGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0.0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} tickFormatter={(v) => `₹${v/1000}k`} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: isDark ? '#0f172a' : '#ffffff',
-                    borderColor: isDark ? '#334155' : '#cbd5e1',
-                    borderRadius: '10px',
-                    fontSize: '11px',
-                    color: isDark ? '#ffffff' : '#0f172a'
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="amount"
-                  stroke="#0ea5e9"
-                  strokeWidth={2.5}
-                  fillOpacity={1}
-                  fill="url(#districtRevGrad)"
-                  dot={{ r: 3.5, fill: '#0ea5e9', stroke: '#ffffff', strokeWidth: 1.5 }}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              onClick={() => navigate('/district-admin/pincodes?division=Salem%20North')}
+              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">Salem North</h4>
+                  <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
+                    ID: DIV-SLM-N
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">Covering 2 registered Pincode zones</p>
+              </div>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636001</span>
+                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636002</span>
+              </div>
+            </div>
+
+            <div
+              onClick={() => navigate('/district-admin/pincodes?division=Salem%20South')}
+              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">Salem South</h4>
+                  <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
+                    ID: DIV-SLM-S
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">Covering 2 registered Pincode zones</p>
+              </div>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636003</span>
+                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636004</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -357,65 +345,6 @@ export function DistrictAdminDashboard() {
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyan-400"></span>Diamond</span>
               <span className="font-bold text-slate-900 dark:text-white">1</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Row 3: Assigned Divisions in District */}
-      <div className="admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              Assigned Divisions in {user?.district || 'Salem'}
-            </h3>
-            <p className="text-xs text-slate-500">Flow: District &rarr; Division &rarr; Pincode</p>
-          </div>
-          <button
-            onClick={() => navigate('/district-admin/divisions')}
-            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
-          >
-            <span>Manage Divisions</span>
-            <ArrowRight className="w-3 h-3" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div
-            onClick={() => navigate('/district-admin/pincodes?division=Salem%20North')}
-            className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 dark:text-white text-sm">Salem North</h4>
-                <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                  ID: DIV-SLM-N
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 mt-1">Covering 2 registered Pincode zones</p>
-            </div>
-            <div className="flex items-center gap-2 mt-3">
-              <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636001</span>
-              <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636002</span>
-            </div>
-          </div>
-
-          <div
-            onClick={() => navigate('/district-admin/pincodes?division=Salem%20South')}
-            className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 dark:text-white text-sm">Salem South</h4>
-                <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                  ID: DIV-SLM-S
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 mt-1">Covering 2 registered Pincode zones</p>
-            </div>
-            <div className="flex items-center gap-2 mt-3">
-              <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636003</span>
-              <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636004</span>
             </div>
           </div>
         </div>

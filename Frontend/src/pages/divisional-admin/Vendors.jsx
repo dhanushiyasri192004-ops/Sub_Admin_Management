@@ -350,78 +350,10 @@ export function DivisionalVendors() {
         </div>
       </div>
 
-      {/* Filter Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1">
-            <Filter className="w-3.5 h-3.5 text-indigo-500" />
-            <span>Filters:</span>
-          </div>
-
-          {/* KYC Status Filter */}
-          <select
-            value={kycFilter}
-            onChange={(e) => setKycFilter(e.target.value)}
-            className="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="">All Verification Status</option>
-            <option value="pending_pincode">Pending Pincode Approval</option>
-            <option value="kyc_pending">KYC Pending Review</option>
-            <option value="approved">Fully Approved / Verified</option>
-            <option value="rejected">Rejected (PIN or KYC)</option>
-          </select>
-
-          {/* Category Filter */}
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="">All Categories</option>
-            <option value="Services">Services</option>
-            <option value="Product">Product</option>
-            <option value="Food">Food</option>
-            <option value="Daily Needs">Daily Needs</option>
-            <option value="Stay">Stay</option>
-            <option value="Travel">Travel</option>
-            <option value="Job">Job</option>
-          </select>
-
-          {/* Rating Filter */}
-          <select
-            value={ratingFilter}
-            onChange={(e) => setRatingFilter(e.target.value)}
-            className="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="">All Ratings</option>
-            <option value="4+">4.0 & Above ★</option>
-            <option value="3+">3.0 to 3.9 ★</option>
-            <option value="below_3">Below 3.0 ★</option>
-          </select>
-
-          {(kycFilter || categoryFilter || ratingFilter) && (
-            <button
-              onClick={() => {
-                setKycFilter('');
-                setCategoryFilter('');
-                setRatingFilter('');
-              }}
-              className="text-xs text-rose-600 dark:text-rose-400 hover:underline font-semibold ml-1 cursor-pointer"
-            >
-              Reset Filters
-            </button>
-          )}
-        </div>
-
-        <div className="text-xs text-slate-500 dark:text-slate-400">
-          Showing <span className="font-bold text-slate-900 dark:text-white">{filteredVendors.length}</span> of {vendors.length} vendors
-        </div>
-      </div>
-
       {/* Main Data Table */}
       <DataTable
         title="Division Vendors Roster"
-        subtitle="Live merchant partners and commercial supply points"
+        subtitle={`Live merchant partners and commercial supply points • Showing ${filteredVendors.length} of ${vendors.length} vendors`}
         columns={columns}
         data={filteredVendors}
         loading={loading}
@@ -430,6 +362,78 @@ export function DivisionalVendors() {
         exportFileName="divisional_vendors.csv"
         tableClassName="min-w-[960px] w-full"
         containerClassName="overflow-x-auto"
+        customFilters={({ isDark }) => (
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            {/* KYC Status Filter */}
+            <div className={`h-9 inline-flex items-center gap-1.5 ${
+              isDark ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700'
+            } border rounded-xl px-2.5 text-xs transition-colors shrink-0`}>
+              <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <select
+                value={kycFilter}
+                onChange={(e) => setKycFilter(e.target.value)}
+                className={`bg-transparent border-none ${isDark ? 'text-slate-200' : 'text-slate-800'} text-xs focus:outline-none cursor-pointer pr-1 truncate`}
+              >
+                <option value="" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>All Verification Status</option>
+                <option value="pending_pincode" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Pending Pincode Approval</option>
+                <option value="kyc_pending" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>KYC Pending Review</option>
+                <option value="approved" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Fully Approved / Verified</option>
+                <option value="rejected" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Rejected</option>
+              </select>
+            </div>
+
+            {/* Category Filter */}
+            <div className={`h-9 inline-flex items-center gap-1.5 ${
+              isDark ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700'
+            } border rounded-xl px-2.5 text-xs transition-colors shrink-0`}>
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className={`bg-transparent border-none ${isDark ? 'text-slate-200' : 'text-slate-800'} text-xs focus:outline-none cursor-pointer pr-1 truncate`}
+              >
+                <option value="" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>All Categories</option>
+                <option value="Services" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Services</option>
+                <option value="Product" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Product</option>
+                <option value="Food" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Food</option>
+                <option value="Daily Needs" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Daily Needs</option>
+                <option value="Stay" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Stay</option>
+                <option value="Travel" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Travel</option>
+                <option value="Job" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Job</option>
+              </select>
+            </div>
+
+            {/* Rating Filter */}
+            <div className={`h-9 inline-flex items-center gap-1.5 ${
+              isDark ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700'
+            } border rounded-xl px-2.5 text-xs transition-colors shrink-0`}>
+              <select
+                value={ratingFilter}
+                onChange={(e) => setRatingFilter(e.target.value)}
+                className={`bg-transparent border-none ${isDark ? 'text-slate-200' : 'text-slate-800'} text-xs focus:outline-none cursor-pointer pr-1 truncate`}
+              >
+                <option value="" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>All Ratings</option>
+                <option value="4+" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>4.0 & Above ★</option>
+                <option value="3+" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>3.0 to 3.9 ★</option>
+                <option value="below_3" className={isDark ? "bg-slate-900 text-slate-200" : "bg-white text-slate-800"}>Below 3.0 ★</option>
+              </select>
+            </div>
+
+            {(kycFilter || categoryFilter || ratingFilter) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setKycFilter('');
+                  setCategoryFilter('');
+                  setRatingFilter('');
+                }}
+                className="text-xs text-rose-600 dark:text-rose-400 hover:underline font-semibold cursor-pointer shrink-0 ml-1"
+                title="Reset Filters"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+        )}
       />
 
       {/* Register Vendor Modal */}

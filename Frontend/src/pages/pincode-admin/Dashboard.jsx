@@ -16,11 +16,6 @@ import {
   ArrowRight
 } from 'lucide-react';
 import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -49,15 +44,6 @@ export function PincodeAdminDashboard() {
     totalAgents: 1,
     pendingPayments: 1
   };
-
-  // Monthly Revenue Data for Pincode
-  const revenueData = [
-    { month: 'Jan', amount: 24000 },
-    { month: 'Feb', amount: 31000 },
-    { month: 'Mar', amount: 39000 },
-    { month: 'Apr', amount: 43000 },
-    { month: 'May', amount: 48500 },
-  ];
 
   const donutData = [
     { name: 'Silver Tier', value: 1, color: '#94a3b8' },
@@ -260,51 +246,64 @@ export function PincodeAdminDashboard() {
         </div>
       </div>
 
-      {/* Row 2: Charts & Supervised Merchants */}
+      {/* Row 2: Local Stores & Membership Tier Share */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Monthly Revenue Inflow for Pincode Zone */}
-        <div className="lg:col-span-8 admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
+        {/* Local Stores in Pincode Zone */}
+        <div className="lg:col-span-8 admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                Monthly Revenue Inflow (PIN {pincode})
-              </span>
-              <p className="text-[11px] text-slate-500">Weekly revenue collections across {areaName}</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Local Stores in PIN {pincode}
+              </h3>
+              <p className="text-xs text-slate-500">Fast dispatch merchant partners in {areaName}</p>
             </div>
-            <span className="text-base font-black text-slate-900 dark:text-white">₹48,500</span>
+            <button
+              onClick={() => navigate('/pincode-admin/vendors')}
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+            >
+              <span>Manage Pincode Vendors</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
           </div>
 
-          <div className="h-56 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="pincodeRevGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0.0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} tickFormatter={(v) => `₹${v / 1000}k`} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: isDark ? '#0f172a' : '#ffffff',
-                    borderColor: isDark ? '#334155' : '#cbd5e1',
-                    borderRadius: '10px',
-                    fontSize: '11px',
-                    color: isDark ? '#ffffff' : '#0f172a'
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="amount"
-                  stroke="#0ea5e9"
-                  strokeWidth={2.5}
-                  fillOpacity={1}
-                  fill="url(#pincodeRevGrad)"
-                  dot={{ r: 3.5, fill: '#0ea5e9', stroke: '#ffffff', strokeWidth: 1.5 }}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              onClick={() => navigate('/pincode-admin/vendors')}
+              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">Sri Murugan Provisions</h4>
+                  <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
+                    VND-001
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">Groceries & Daily Essentials &bull; 15 Dispatched Orders</p>
+              </div>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold">Status: Active</span>
+                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">Rating: 4.8 ★</span>
+              </div>
+            </div>
+
+            <div
+              onClick={() => navigate('/pincode-admin/vendors')}
+              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">Salem Supermart</h4>
+                  <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
+                    VND-002
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">FMCG Retail & Wholesale &bull; 28 Dispatched Orders</p>
+              </div>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold">Status: Active</span>
+                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">Rating: 4.6 ★</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -351,65 +350,6 @@ export function PincodeAdminDashboard() {
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyan-400"></span>Diamond</span>
               <span className="font-bold text-slate-900 dark:text-white">1</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Row 3: Local Stores in Pincode Zone */}
-      <div className="admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              Local Stores in PIN {pincode}
-            </h3>
-            <p className="text-xs text-slate-500">Fast dispatch merchant partners in {areaName}</p>
-          </div>
-          <button
-            onClick={() => navigate('/pincode-admin/vendors')}
-            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
-          >
-            <span>Manage Pincode Vendors</span>
-            <ArrowRight className="w-3 h-3" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div
-            onClick={() => navigate('/pincode-admin/vendors')}
-            className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 dark:text-white text-sm">Sri Murugan Provisions</h4>
-                <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                  VND-001
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 mt-1">Groceries & Daily Essentials &bull; 15 Dispatched Orders</p>
-            </div>
-            <div className="flex items-center gap-2 mt-3">
-              <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold">Status: Active</span>
-              <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">Rating: 4.8 ★</span>
-            </div>
-          </div>
-
-          <div
-            onClick={() => navigate('/pincode-admin/vendors')}
-            className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 dark:text-white text-sm">Salem Supermart</h4>
-                <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                  VND-002
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 mt-1">FMCG Retail & Wholesale &bull; 28 Dispatched Orders</p>
-            </div>
-            <div className="flex items-center gap-2 mt-3">
-              <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold">Status: Active</span>
-              <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">Rating: 4.6 ★</span>
             </div>
           </div>
         </div>

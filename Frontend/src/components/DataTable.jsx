@@ -12,6 +12,7 @@ export function DataTable({
   filterOptions = null,
   activeFilter = '',
   onFilterChange = null,
+  customFilters = null,
   onRefresh = null,
   title = '',
   subtitle = '',
@@ -113,7 +114,7 @@ export function DataTable({
             )}
           </div>
 
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
             <SearchBar
               value={search}
               onChange={(val) => {
@@ -123,6 +124,10 @@ export function DataTable({
               placeholder={searchPlaceholder}
               className="w-full sm:w-44 md:w-52 shrink"
             />
+
+            {typeof customFilters === 'function'
+              ? customFilters({ isDark })
+              : customFilters}
 
             {filterOptions && onFilterChange && (
               <div className={`h-9 inline-flex items-center gap-2 ${
