@@ -106,5 +106,37 @@
     "timestamp": "2026-09-17T07:01:32.745Z",
     "createdAt": "2026-09-17T07:01:32.746Z",
     "updatedAt": "2026-09-17T07:01:32.746Z"
+  },
+  {
+    "_id": "78cc8ad2-40d3-40c1-85e8-e51a879487df",
+    "id": "f93f2bfb-35a1-47c6-b3aa-143b606a4e47",
+    "action": "MANAGER_REGISTRATION_REJECTED",
+    "adminId": "ADM-001",
+    "adminName": "State Admin",
+    "adminRole": "State Admin",
+    "targetUserId": "1184db8a-f739-482f-b2b9-dfbbbf2610c1",
+    "targetUserName": "Dinesh",
+    "targetUserRole": "state_manager",
+    "details": "state manager \"Dinesh\" registration rejected by State Admin \"State Admin\". Reason: fghjk",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-17T07:26:29.847Z",
+    "createdAt": "2026-09-17T07:26:29.848Z",
+    "updatedAt": "2026-09-17T07:26:29.848Z"
+  },
+  {
+    "_id": "014353c1-2c8c-4294-a108-994990c81141",
+    "id": "44009f42-a3b7-4922-8bc5-908c1811d720",
+    "action": "MANAGER_REGISTRATION_REJECTED",
+    "adminId": "ADM-001",
+    "adminName": "State Admin",
+    "adminRole": "State Admin",
+    "targetUserId": "a8a3cc80-ff23-45e2-9207-109ed32ba636",
+    "targetUserName": "District Leader",
+    "targetUserRole": "district_manager",
+    "details": "district manager \"District Leader\" registration rejected by State Admin \"State Admin\". Reason: fghjk",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-17T07:26:46.775Z",
+    "createdAt": "2026-09-17T07:26:46.775Z",
+    "updatedAt": "2026-09-17T07:26:46.775Z"
   }
 ]

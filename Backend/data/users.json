@@ -171,8 +171,8 @@
     "passwordHash": "$2a$10$Q1F/fQ7gLn.VLrCtx6JTieTqe5oJfQAfpNxfbV5pPF3hNK9hy4L4O",
     "role": "district_manager",
     "level": 2,
-    "status": "under_review",
-    "adminApprovalStatus": "pending",
+    "status": "rejected",
+    "adminApprovalStatus": "rejected",
     "dob": null,
     "gender": null,
     "address": "District Collectorate Road, Salem",
@@ -191,7 +191,12 @@
     "regionId": "state_tn",
     "avatarUrl": null,
     "createdAt": "2026-09-17T06:46:21.634Z",
-    "updatedAt": "2026-09-17T06:46:21.634Z"
+    "updatedAt": "2026-09-17T07:26:46.774Z",
+    "rejectionReason": "fghjk",
+    "adminRejectedBy": "State Admin",
+    "adminRejectedById": "ADM-001",
+    "adminRejectedByRole": "State Admin",
+    "adminRejectedAt": "2026-09-17T07:26:46.774Z"
   },
   {
     "_id": "f0a649f7-4f52-42c7-a011-ab9ed9f928c9",
@@ -277,8 +282,8 @@
     "passwordHash": "$2a$10$W1JMIwwAOAY5nam5tFYfv.tH7SLT9owOMIBs1daiurXKawIRbiYue",
     "role": "state_manager",
     "level": 1,
-    "status": "under_review",
-    "adminApprovalStatus": "pending",
+    "status": "rejected",
+    "adminApprovalStatus": "rejected",
     "dob": "2004-06-11",
     "gender": "male",
     "address": "2 Gandhi Nagar, Chennai",
@@ -306,7 +311,11 @@
     "regionId": "state_ka",
     "avatarUrl": "/uploads/1789627973618_luffy.jpg",
     "createdAt": "2026-09-17T06:52:54.049Z",
-    "updatedAt": "2026-09-17T07:01:32.743Z",
-    "rejectionReason": null
+    "updatedAt": "2026-09-17T07:26:29.844Z",
+    "rejectionReason": "fghjk",
+    "adminRejectedBy": "State Admin",
+    "adminRejectedById": "ADM-001",
+    "adminRejectedByRole": "State Admin",
+    "adminRejectedAt": "2026-09-17T07:26:29.844Z"
   }
 ]

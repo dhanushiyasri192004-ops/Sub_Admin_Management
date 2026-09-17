@@ -85,15 +85,8 @@ export function StateManagers({ level }) {
   const [selectedManager, setSelectedManager] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Identify admin scope base path
+  // Identify admin role
   const userRole = (user?.role || '').toLowerCase();
-  const basePath = userRole.includes('district')
-    ? '/district-admin/managers'
-    : userRole.includes('division') || userRole.includes('divisional')
-    ? '/divisional-admin/managers'
-    : userRole.includes('pincode')
-    ? '/pincode-admin/managers'
-    : '/state-admin/managers';
 
   // Determine active level from path or prop
   let activeLevel = 'state';
@@ -113,27 +106,6 @@ export function StateManagers({ level }) {
   }
 
   const config = LEVEL_CONFIGS[activeLevel] || LEVEL_CONFIGS.state;
-
-  // Available level tabs based on admin hierarchy
-  const availableTabs = useMemo(() => {
-    const all = [
-      { id: 'state', label: 'State', path: `${basePath}/state` },
-      { id: 'district', label: 'District', path: `${basePath}/district` },
-      { id: 'divisional', label: 'Divisional', path: `${basePath}/divisional` },
-      { id: 'pincode', label: 'Pincode', path: `${basePath}/pincode` }
-    ];
-
-    if (userRole.includes('district')) {
-      return all.filter(t => t.id !== 'state');
-    }
-    if (userRole.includes('division') || userRole.includes('divisional')) {
-      return all.filter(t => t.id === 'divisional' || t.id === 'pincode');
-    }
-    if (userRole.includes('pincode')) {
-      return all.filter(t => t.id === 'pincode');
-    }
-    return all;
-  }, [userRole, basePath]);
 
   const loadData = async () => {
     setLoading(true);
@@ -273,31 +245,10 @@ export function StateManagers({ level }) {
 
   return (
     <div className="space-y-6">
-      {/* Header & Hierarchy Level Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">{config.title}</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{config.subtitle}</p>
-        </div>
-
-        {/* Level Switcher (Only show if multiple levels are available for this admin) */}
-        {availableTabs.length > 1 && (
-          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto">
-            {availableTabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => navigate(tab.path)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeLevel === tab.id
-                    ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        )}
+      {/* Header */}
+      <div>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">{config.title}</h2>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{config.subtitle}</p>
       </div>
 
       {/* Metric Cards */}
