@@ -123,7 +123,7 @@ export function PincodeKYC() {
           <div className="text-xs flex items-center gap-1.5">
             <ShieldCheck className={`w-3.5 h-3.5 shrink-0 ${isPending ? 'text-amber-500' : 'text-emerald-500'}`} />
             <span className={`font-semibold ${isPending ? 'text-amber-600 dark:text-amber-400 italic' : 'text-slate-900 dark:text-white'}`}>
-              {row.verifiedBy || (isPending ? 'Pending Verification' : `${user?.name || 'Priya Narayanan'} (Pincode Admin)`)}
+              {row.verifiedBy || (isPending ? 'Pending Verification' : `${user?.name || 'Pincode Admin'} (Pincode Admin)`)}
             </span>
           </div>
         );

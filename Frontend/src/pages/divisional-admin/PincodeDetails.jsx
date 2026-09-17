@@ -30,48 +30,7 @@ export function DivisionalPincodeDetails() {
   const divisionName = user?.division || 'Salem North';
   const districtName = user?.district || 'Salem';
 
-  const pincodes = [
-    {
-      pincode: '636001',
-      area: 'Salem Town Fort',
-      division: 'Salem North',
-      district: 'Salem',
-      admin: 'Priya Narayanan',
-      customers: 1420,
-      vendors: 2,
-      orders: 6,
-      totalManagers: 1,
-      totalAgents: 5,
-      pendingKYC: 1,
-      totalBookings: 4,
-      totalJobApplied: 8,
-      deliveryPartner: 3,
-      technician: 2,
-      executive: 2,
-      totalMembershipCards: 480,
-      status: 'Active'
-    },
-    {
-      pincode: '636002',
-      area: 'Shevapet & Market',
-      division: 'Salem North',
-      district: 'Salem',
-      admin: 'Suresh Raina',
-      customers: 980,
-      vendors: 2,
-      orders: 4,
-      totalManagers: 1,
-      totalAgents: 3,
-      pendingKYC: 1,
-      totalBookings: 2,
-      totalJobApplied: 7,
-      deliveryPartner: 2,
-      technician: 2,
-      executive: 1,
-      totalMembershipCards: 340,
-      status: 'Active'
-    }
-  ];
+  const pincodes = [];
 
   const getWorkforceMetrics = (pin) => [
     { label: 'Total Managers', value: pin.totalManagers, icon: UserCog, color: 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/60 dark:text-indigo-400 border-indigo-100 dark:border-indigo-900/50' },
@@ -109,7 +68,14 @@ export function DivisionalPincodeDetails() {
       </div>
 
       {/* Grid identical to District Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+      {pincodes.length === 0 ? (
+        <div className="p-12 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] rounded-2xl">
+          <MapPin className="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+          <p className="font-medium text-base text-slate-800 dark:text-slate-200">No pincodes found</p>
+          <p className="text-xs mt-1 text-slate-400">There are no operational pincodes configured for this view.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
         {pincodes.map((pin) => (
           <div
             key={pin.pincode}
@@ -189,6 +155,7 @@ export function DivisionalPincodeDetails() {
           </div>
         ))}
       </div>
+    )}
 
       {/* Pincode Full Operational Details Modal */}
       <Modal

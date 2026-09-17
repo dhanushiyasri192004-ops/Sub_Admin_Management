@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
@@ -16,15 +17,28 @@ const qualityRoutes = require('./routes/qualityRoutes');
 const pincodeRoutes = require('./routes/pincodeRoutes');
 const executiveRoutes = require('./routes/executiveRoutes');
 
+// Newly integrated Manager Portal routes
+const locationRoutes = require('./routes/locationRoutes');
+const managerDirectoryRoutes = require('./routes/managerDirectoryRoutes');
+const auditRoutes = require('./routes/auditRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
+
 const app = express();
-// Port configured
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// API Routes
+// Serve static uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Core Sub-Admin Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/customers', customerRoutes);
@@ -39,14 +53,24 @@ app.use('/api/quality', qualityRoutes);
 app.use('/api/pincodes', pincodeRoutes);
 app.use('/api/operations', executiveRoutes);
 
-// Health Check
+// Unified Health Check (Public)
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
     timestamp: new Date().toISOString(),
-    service: 'Hierarchical Admin Management System API'
+    service: 'Unified Hierarchical Sub-Admin & Field Manager Backend API',
+    portals: [
+      { name: 'Hierarchical Admin Management Portal', defaultClient: 'http://localhost:3000' },
+      { name: 'Agent & Field Manager Portal', defaultClient: 'http://localhost:5173' }
+    ]
   });
 });
+
+// Integrated Field Manager Routes
+app.use('/api/managers', managerDirectoryRoutes);
+app.use('/api/audit-logs', auditRoutes);
+app.use('/api/uploads', uploadRoutes);
+app.use('/api', locationRoutes); // /api/states, /api/districts, /api/divisions, /api/pincodes
 
 // Global 404
 app.use((req, res) => {
@@ -55,14 +79,20 @@ app.use((req, res) => {
 
 // Global Error Handler
 app.use((err, req, res, next) => {
-  console.error('Unhandled Error:', err);
-  res.status(500).json({ success: false, message: 'Internal Server Error', error: err.message });
+  console.error('Unhandled Error:', err.stack || err.message);
+  res.status(err.status || 500).json({ success: false, message: err.message || 'Internal Server Error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`=======================================================`);
-  console.log(`🚀 Hierarchical Admin Management Backend is running!`);
-  console.log(`🌐 Server Port: http://localhost:${PORT}`);
-  console.log(`⚡ Health Check: http://localhost:${PORT}/api/health`);
-  console.log(`=======================================================`);
-});
+if (require.main === module) {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`================================================================`);
+    console.log(`🚀 Unified Sub-Admin & Field Manager Backend is running!`);
+    console.log(`🌐 Local URL:   http://localhost:${PORT}`);
+    console.log(`📱 Network URL: http://192.168.100.236:${PORT}`);
+    console.log(`⚡ Health Check: http://192.168.100.236:${PORT}/api/health`);
+    console.log(`📁 Uploads:      http://192.168.100.236:${PORT}/uploads`);
+    console.log(`================================================================`);
+  });
+}
+
+module.exports = app;

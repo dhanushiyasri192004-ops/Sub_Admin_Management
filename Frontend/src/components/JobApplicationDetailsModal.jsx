@@ -28,21 +28,19 @@ export function JobApplicationDetailsModal({ application, isOpen, onClose, onVie
   if (!application) return null;
 
   const candidateName = application.customerName || 'Candidate';
-  const appId = application.id || 'APP-2026';
-  const jobTitle = application.jobTitle || application.title || 'Specialist';
-  const vendorName = application.vendorName || 'Partner Vendor';
+  const appId = application.id || '-';
+  const jobTitle = application.jobTitle || application.title || '-';
+  const vendorName = application.vendorName || '-';
   const jobType = application.jobType || 'Full-time';
-  const appliedDate = application.applicationDate || application.createdAt || '2026-03-05 10:30 AM';
-  const email = application.customerEmail || `${candidateName.toLowerCase().replace(/\s+/g, '.')}@gmail.com`;
-  const phone = application.customerPhone || '+91 98401 23456';
-  const locationText = `${application.district || 'Salem'}, ${application.division || 'Salem North'}`;
-  const pincode = application.pincode || '636001';
-  const experience = application.experience || '4+ Years of Professional Field Experience';
-  const education = application.education || 'Diploma / Degree in Specialized Field';
-  const skills = Array.isArray(application.skills)
-    ? application.skills
-    : ['Technical Diagnostics', 'Field Operations', 'Equipment Maintenance', 'Customer Support'];
-  const resumeFileName = application.resumeName || `${candidateName.replace(/\s+/g, '_')}_Resume.pdf`;
+  const appliedDate = application.applicationDate || application.createdAt || '-';
+  const email = application.customerEmail || '-';
+  const phone = application.customerPhone || '-';
+  const locationText = application.district ? `${application.district}${application.division ? `, ${application.division}` : ''}` : '-';
+  const pincode = application.pincode || '-';
+  const experience = application.experience || '-';
+  const education = application.education || '-';
+  const skills = Array.isArray(application.skills) ? application.skills : [];
+  const resumeFileName = application.resumeName || (application.customerName ? `${application.customerName.replace(/\s+/g, '_')}_Resume.pdf` : 'Resume.pdf');
 
   // Determine timeline steps and active status
   const statusLower = (application.status || '').toLowerCase();
@@ -58,27 +56,27 @@ export function JobApplicationDetailsModal({ application, isOpen, onClose, onVie
     {
       title: 'Under Review',
       desc: 'Vendor HR reviewed credentials, experience, and eligibility',
-      time: '2026-03-05 02:15 PM'
+      time: application.reviewedAt || null
     },
     {
       title: 'Shortlisted',
       desc: 'Candidate profile shortlisted for technical evaluation',
-      time: '2026-03-05 05:45 PM'
+      time: application.shortlistedAt || null
     },
     {
       title: 'Interview',
       desc: 'Technical & HR interview rounds scheduled and conducted',
-      time: '2026-03-06 11:00 AM'
+      time: application.interviewScheduledAt || null
     },
     {
       title: 'Selected / Offer',
       desc: 'Candidate selected and official employment offer released',
-      time: '2026-03-07 04:30 PM'
+      time: application.offeredAt || null
     },
     {
       title: 'Completed',
       desc: 'Offer accepted, verification verified, and onboarding completed',
-      time: '2026-03-08 10:00 AM'
+      time: application.completedAt || null
     }
   ];
 
@@ -390,14 +388,18 @@ export function JobApplicationDetailsModal({ application, isOpen, onClose, onVie
               Key Skills & Technical Competencies
             </span>
             <div className="flex flex-wrap gap-1.5">
-              {skills.map((skill, sIdx) => (
-                <span
-                  key={sIdx}
-                  className="px-2.5 py-1 rounded-md text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs"
-                >
-                  {skill}
-                </span>
-              ))}
+              {skills.length === 0 ? (
+                <span className="text-xs text-slate-400">None specified</span>
+              ) : (
+                skills.map((skill, sIdx) => (
+                  <span
+                    key={sIdx}
+                    className="px-2.5 py-1 rounded-md text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs"
+                  >
+                    {skill}
+                  </span>
+                ))
+              )}
             </div>
           </div>
         </div>

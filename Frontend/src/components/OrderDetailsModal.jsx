@@ -127,24 +127,12 @@ export function OrderDetailsModal({ order, isOpen, onClose }) {
   const normalizedTier = isCardMember ? 
     (order.membershipTier.charAt(0).toUpperCase() + order.membershipTier.slice(1).toLowerCase()) : null;
 
-  // Derive vendor details based on order data or defaults
-  const vendorName = order.vendorName || order.vendor?.name || 
-    (order.items?.some(i => i.name?.toLowerCase().includes('oil') || i.name?.toLowerCase().includes('millet') || i.name?.toLowerCase().includes('grocery'))
-      ? 'Salem Supermart & Grocery Supplies'
-      : order.items?.some(i => i.name?.toLowerCase().includes('automation') || i.name?.toLowerCase().includes('tool') || i.name?.toLowerCase().includes('filter'))
-        ? 'Sri Krishna Electricals & Spares'
-        : 'Salem State Logistics & Supplies');
-
-  const vendorId = order.vendorId || order.vendor?.id || 
-    (vendorName.includes('Supermart') ? 'VND-002' : 'VND-001');
-
-  const vendorCategory = order.vendorCategory || order.vendor?.category || 
-    (vendorName.includes('Supermart') ? 'Food & Grocery' : 'Hardware & Spares');
-
-  const vendorContact = order.vendorContact || order.vendor?.contactPerson || 
-    (vendorName.includes('Supermart') ? 'Babu Janardhan (+91 94431 10002)' : 'Krishna Murthy (+91 94431 10001)');
-
-  const vendorLocation = order.vendorLocation || `${order.district || 'Salem'}, ${order.division || 'Salem North'}`;
+  // Derive vendor details based on order data
+  const vendorName = order.vendorName || order.vendor?.name || 'Unassigned';
+  const vendorId = order.vendorId || order.vendor?.id || '-';
+  const vendorCategory = order.vendorCategory || order.vendor?.category || '-';
+  const vendorContact = order.vendorContact || order.vendor?.contactPerson || '-';
+  const vendorLocation = order.vendorLocation || (order.district ? `${order.district}${order.division ? `, ${order.division}` : ''}` : '-');
 
   return (
     <Modal
@@ -174,7 +162,7 @@ export function OrderDetailsModal({ order, isOpen, onClose }) {
                   Customer Details
                 </span>
                 <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
-                  ID: {order.customerId || 'CUST-102'}
+                  ID: {order.customerId || '-'}
                 </span>
               </div>
 

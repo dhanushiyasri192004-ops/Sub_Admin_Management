@@ -79,20 +79,9 @@ export function StateMembershipCards() {
       }
 
       // If no cards were issued in the latest 2-month window (e.g. historical baseline),
-      // we compute a proportional baseline comparison against previous cycle
       let isIncrease = curCount > prevCount;
       let isDecrease = curCount < prevCount;
       let isNeutral = curCount === prevCount;
-
-      if (curCount === 0 && prevCount === 0 && totalTierCount > 0) {
-        // Sample baseline distribution: realistic monthly growth tracking
-        const simulatedMonthlyGain = tier === 'Diamond' ? 1 : tier === 'Gold' ? 1 : 0;
-        const simulatedPrev = Math.max(1, totalTierCount - simulatedMonthlyGain);
-        pct = Math.round((simulatedMonthlyGain / simulatedPrev) * 100);
-        isIncrease = simulatedMonthlyGain > 0;
-        isDecrease = simulatedMonthlyGain < 0;
-        isNeutral = simulatedMonthlyGain === 0;
-      }
 
       return {
         curCount,

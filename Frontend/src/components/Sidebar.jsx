@@ -312,7 +312,8 @@ export function Sidebar({ isOpen, setIsOpen }) {
       {
         title: 'Managers',
         items: [
-          { name: 'Pincode Manager', path: '/pincode-admin/pincode-manager', icon: Sliders },
+          { name: 'Pincode Managers', path: '/pincode-admin/managers', icon: UserCog },
+          { name: 'Pincode Zone Ops', path: '/pincode-admin/pincode-manager', icon: Sliders },
         ]
       },
       {

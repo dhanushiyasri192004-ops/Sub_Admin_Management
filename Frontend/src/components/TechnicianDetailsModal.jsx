@@ -22,46 +22,20 @@ export function TechnicianDetailsModal({ isOpen, onClose, technician }) {
 
   if (!technician) return null;
 
-  const techId = technician.id || 'TECH-401';
+  const techId = technician.id || '-';
   const name = technician.name || 'Technician';
-  const phone = technician.phone || '+91 97890 00000';
-  const skillSpecialty = technician.skillSpecialty || technician.specialization || (Array.isArray(technician.skills) ? technician.skills.join(', ') : 'Field Service Specialist');
-  const district = technician.district || 'Salem';
-  const division = technician.division || 'Salem North';
-  const pincode = technician.pincode || '636001';
-  const rating = technician.rating ? Number(technician.rating).toFixed(1) : '4.8';
+  const phone = technician.phone || '-';
+  const skillSpecialty = technician.skillSpecialty || technician.specialization || (Array.isArray(technician.skills) ? technician.skills.join(', ') : '-');
+  const district = technician.district || '-';
+  const division = technician.division || '-';
+  const pincode = technician.pincode || '-';
+  const rating = technician.rating ? Number(technician.rating).toFixed(1) : 'N/A';
   const completedJobs = technician.completedJobs ?? technician.jobsCompleted ?? 0;
-  const totalJobs = technician.totalJobs ?? (completedJobs + (technician.activeJobs || (technician.status === 'Busy' ? 1 : 0) || 6));
+  const totalJobs = technician.totalJobs ?? (completedJobs + (technician.activeJobs || 0));
   const currentStatus = technician.status || 'Available';
   const verificationStatus = technician.verificationStatus || 'Verified';
 
-  // Fallback realistic recent jobs if not present
-  const recentJobs = technician.recentJobs && technician.recentJobs.length > 0 ? technician.recentJobs : [
-    {
-      jobId: `JOB-2026-${Math.floor(800 + Math.random() * 190)}`,
-      customer: 'Deepak Raj',
-      service: `${skillSpecialty} Diagnostics & Servicing`,
-      location: `Fairlands, ${district}`,
-      time: '10:30 AM Today',
-      status: currentStatus === 'Busy' ? 'In Progress' : 'Completed'
-    },
-    {
-      jobId: `JOB-2026-${Math.floor(750 + Math.random() * 50)}`,
-      customer: 'Swathi Radhakrishnan',
-      service: 'Routine Preventive Maintenance & Part Replacement',
-      location: `Meyyanur Main Rd, ${district}`,
-      time: 'Yesterday, 03:45 PM',
-      status: 'Completed'
-    },
-    {
-      jobId: `JOB-2026-${Math.floor(700 + Math.random() * 50)}`,
-      customer: 'Vignesh Kumar',
-      service: 'Emergency Breakdown Rectification',
-      location: `Hasthampatti, ${district}`,
-      time: '05 Mar 2026, 01:15 PM',
-      status: 'Completed'
-    }
-  ];
+  const recentJobs = technician.recentJobs && technician.recentJobs.length > 0 ? technician.recentJobs : [];
 
   return (
     <Modal
@@ -258,32 +232,40 @@ export function TechnicianDetailsModal({ isOpen, onClose, technician }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                {recentJobs.map((job, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
-                    <td className="py-3 pl-5 pr-4 font-mono font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
-                      {job.jobId}
-                    </td>
-                    <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
-                      {job.customer}
-                    </td>
-                    <td className="py-3 px-4 text-slate-700 dark:text-slate-200">
-                      <div className="truncate max-w-[220px]" title={job.service}>
-                        {job.service}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-slate-600 dark:text-slate-300">
-                      <div className="truncate max-w-[180px]" title={job.location}>
-                        {job.location}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">
-                      {job.time}
-                    </td>
-                    <td className="py-3 pl-4 pr-5 text-right whitespace-nowrap">
-                      <StatusBadge status={job.status} />
+                {recentJobs.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="py-6 text-center text-slate-400 text-xs">
+                      No recent service assignments recorded
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  recentJobs.map((job, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                      <td className="py-3 pl-5 pr-4 font-mono font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
+                        {job.jobId}
+                      </td>
+                      <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
+                        {job.customer}
+                      </td>
+                      <td className="py-3 px-4 text-slate-700 dark:text-slate-200">
+                        <div className="truncate max-w-[220px]" title={job.service}>
+                          {job.service}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-slate-600 dark:text-slate-300">
+                        <div className="truncate max-w-[180px]" title={job.location}>
+                          {job.location}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">
+                        {job.time}
+                      </td>
+                      <td className="py-3 pl-4 pr-5 text-right whitespace-nowrap">
+                        <StatusBadge status={job.status} />
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

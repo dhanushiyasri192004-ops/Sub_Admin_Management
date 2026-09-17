@@ -5,8 +5,8 @@ import { getRoleDashboardPath } from '../../utils/permissions';
 import { Mail, Lock, Eye, EyeOff, Shield, ShieldCheck, ChevronDown, CheckCircle2 } from 'lucide-react';
 
 export function Login() {
-  const [email, setEmail] = useState('state_admin@admin.com');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);

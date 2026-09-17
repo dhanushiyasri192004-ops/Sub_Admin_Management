@@ -4,14 +4,22 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jwt_admin_management_
 
 function generateToken(user) {
   const payload = {
-    id: user.id,
+    id: user._id || user.id,
+    _id: user._id || user.id,
     name: user.name,
     email: user.email,
     role: user.role,
+    level: user.level || (user.role === 'State Admin' ? 1 : user.role === 'District Admin' ? 2 : user.role === 'Divisional Admin' ? 3 : 4),
+    status: user.status || 'active',
     state: user.state,
     district: user.district,
     division: user.division,
-    pincode: user.pincode
+    pincode: user.pincode,
+    stateId: user.stateId,
+    districtId: user.districtId,
+    divisionId: user.divisionId,
+    pincodeId: user.pincodeId,
+    regionId: user.regionId || user.stateId
   };
 
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
@@ -22,6 +30,7 @@ function verifyToken(token) {
 }
 
 module.exports = {
+  JWT_SECRET,
   generateToken,
   verifyToken
 };

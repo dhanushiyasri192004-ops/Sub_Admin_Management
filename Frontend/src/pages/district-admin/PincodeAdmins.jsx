@@ -5,48 +5,7 @@ import { ShieldCheck, MapPin } from 'lucide-react';
 
 export function DistrictPincodeAdmins() {
   const { user } = useAuth();
-  const [admins, setAdmins] = useState([
-    {
-      id: 'ADM-PIN-636001',
-      name: 'Priya Narayanan',
-      email: 'pincode_admin@admin.com',
-      phone: '+91 98403 11223',
-      pincode: '636001',
-      area: 'Salem Fort / Town',
-      division: 'Salem North',
-      status: 'Active'
-    },
-    {
-      id: 'ADM-PIN-636002',
-      name: 'Suresh Raina',
-      email: 'pincode_admin_636002@admin.com',
-      phone: '+91 98403 44556',
-      pincode: '636002',
-      area: 'Shevapet / Bazaar',
-      division: 'Salem North',
-      status: 'Active'
-    },
-    {
-      id: 'ADM-PIN-636003',
-      name: 'Deepak Kumar',
-      email: 'pincode_admin_636003@admin.com',
-      phone: '+91 98403 77889',
-      pincode: '636003',
-      area: 'Hasthampatti East',
-      division: 'Salem South',
-      status: 'Active'
-    },
-    {
-      id: 'ADM-PIN-636004',
-      name: 'Anand Murugan',
-      email: 'pincode_admin_636004@admin.com',
-      phone: '+91 98403 99001',
-      pincode: '636004',
-      area: 'Ammapet Industrial',
-      division: 'Salem South',
-      status: 'Active'
-    }
-  ]);
+  const [admins, setAdmins] = useState([]);
 
   const columns = [
     {

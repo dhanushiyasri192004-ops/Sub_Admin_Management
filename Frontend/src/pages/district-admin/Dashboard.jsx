@@ -28,25 +28,43 @@ export function DistrictAdminDashboard() {
   const { user } = useAuth();
   const { isDark } = useTheme();
   const navigate = useNavigate();
-  const [stats, setStats] = useState({
-    totalDivisions: 2,
-    totalPincodes: 4,
-    totalCustomers: 5,
-    totalVendors: 3,
-    totalOrders: 3,
-    totalBookings: 2,
-    totalJobs: 2,
-    totalTechnicians: 2,
-    totalAgents: 2,
-    pendingPayments: 1
-  });
-  const [loading, setLoading] = useState(false);
+
+  const [summaryData, setSummaryData] = useState(null);
+  const [divisions, setDivisions] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    Promise.all([
+      dataService.getDashboardSummary().catch(() => null),
+      dataService.getDivisions().catch(() => null)
+    ]).then(([summary, divRes]) => {
+      if (!isMounted) return;
+      if (summary?.success) setSummaryData(summary);
+      if (divRes?.divisions) setDivisions(divRes.divisions);
+    });
+    return () => { isMounted = false; };
+  }, []);
+
+  const metrics = summaryData?.metrics || {};
+  const stats = {
+    totalDivisions: divisions.length,
+    totalPincodes: metrics.totalPincodes || 0,
+    totalCustomers: metrics.totalCustomers || 0,
+    totalVendors: metrics.totalVendors || 0,
+    totalOrders: metrics.totalOrders || 0,
+    totalBookings: metrics.totalBookings || 0,
+    totalJobs: metrics.totalJobs || 0,
+    totalTechnicians: metrics.totalTechnicians || 0,
+    totalAgents: metrics.totalAgents || 0,
+    pendingPayments: (metrics.pendingAgentPayouts || 0) + (metrics.pendingVendorPayouts || 0) > 0 ? 1 : 0
+  };
 
   const donutData = [
-    { name: 'Silver Tier', value: 2, color: '#94a3b8' },
-    { name: 'Gold Tier', value: 2, color: '#f59e0b' },
-    { name: 'Diamond Tier', value: 1, color: '#0ea5e9' }
+    { name: 'Silver Tier', value: summaryData?.membershipDistribution?.Silver || 0, color: '#94a3b8' },
+    { name: 'Gold Tier', value: summaryData?.membershipDistribution?.Gold || 0, color: '#f59e0b' },
+    { name: 'Diamond Tier', value: summaryData?.membershipDistribution?.Diamond || 0, color: '#0ea5e9' }
   ];
+  const totalCards = (summaryData?.membershipDistribution?.Silver || 0) + (summaryData?.membershipDistribution?.Gold || 0) + (summaryData?.membershipDistribution?.Diamond || 0);
 
   return (
     <div className="space-y-6 pb-8">
@@ -261,45 +279,38 @@ export function DistrictAdminDashboard() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div
-              onClick={() => navigate('/district-admin/pincodes?division=Salem%20North')}
-              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">Salem North</h4>
-                  <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                    ID: DIV-SLM-N
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 mt-1">Covering 2 registered Pincode zones</p>
-              </div>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636001</span>
-                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636002</span>
-              </div>
+          {divisions.length === 0 ? (
+            <div className="p-8 text-center text-slate-400 text-xs">
+              No divisions assigned yet
             </div>
-
-            <div
-              onClick={() => navigate('/district-admin/pincodes?division=Salem%20South')}
-              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">Salem South</h4>
-                  <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                    ID: DIV-SLM-S
-                  </span>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {divisions.map(div => (
+                <div
+                  key={div.id || div.name}
+                  onClick={() => navigate(`/district-admin/pincodes?division=${encodeURIComponent(div.name)}`)}
+                  className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-slate-900 dark:text-white text-sm">{div.name}</h4>
+                      <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
+                        ID: {div.id || div.name}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">Covering {div.pincodes?.length || 0} registered Pincode zones</p>
+                  </div>
+                  {div.pincodes && div.pincodes.length > 0 && (
+                    <div className="flex items-center gap-2 mt-3 flex-wrap">
+                      {div.pincodes.map(pin => (
+                        <span key={pin} className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: {pin}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Covering 2 registered Pincode zones</p>
-              </div>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636003</span>
-                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">PIN: 636004</span>
-              </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
 
         {/* Membership Cards Donut */}
@@ -328,7 +339,7 @@ export function DistrictAdminDashboard() {
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-              <span className="text-base font-black text-slate-900 dark:text-white">5</span>
+              <span className="text-base font-black text-slate-900 dark:text-white">{totalCards}</span>
               <span className="text-[9px] text-slate-500 font-semibold uppercase">Cards</span>
             </div>
           </div>
@@ -336,15 +347,15 @@ export function DistrictAdminDashboard() {
           <div className="space-y-1.5 text-xs">
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-slate-400"></span>Silver</span>
-              <span className="font-bold text-slate-900 dark:text-white">2</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summaryData?.membershipDistribution?.Silver || 0}</span>
             </div>
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-400"></span>Gold</span>
-              <span className="font-bold text-slate-900 dark:text-white">2</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summaryData?.membershipDistribution?.Gold || 0}</span>
             </div>
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyan-400"></span>Diamond</span>
-              <span className="font-bold text-slate-900 dark:text-white">1</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summaryData?.membershipDistribution?.Diamond || 0}</span>
             </div>
           </div>
         </div>

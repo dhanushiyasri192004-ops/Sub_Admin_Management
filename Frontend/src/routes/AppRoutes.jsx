@@ -295,6 +295,8 @@ export function AppRoutes() {
             <Route path="/pincode-admin/kyc" element={<PincodeKYC />} />
             <Route path="/pincode-admin/quality-check" element={<PincodeQualityCheck />} />
             <Route path="/pincode-admin/business-reports" element={<PincodeBusinessReports />} />
+            <Route path="/pincode-admin/managers" element={<StateManagers level="pincode" />} />
+            <Route path="/pincode-admin/managers/pincode" element={<StateManagers level="pincode" />} />
             <Route path="/pincode-admin/pincode-manager" element={<PincodeManager />} />
             <Route path="/pincode-admin/payments" element={<PincodePayments />} />
             <Route path="/pincode-admin/tasks" element={<PincodeTasks />} />

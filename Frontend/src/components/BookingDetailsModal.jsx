@@ -39,21 +39,21 @@ export function BookingDetailsModal({ booking, isOpen, onClose }) {
   let representativeName = booking.technicianName || booking.technicianAssigned || 'Unassigned';
   let representativeRole = 'Technician';
   let RepIcon = Wrench;
-  let repId = 'TECH-401';
-  let repPhone = '+91 98402 11001';
+  let repId = booking.technicianId || '-';
+  let repPhone = booking.technicianPhone || '-';
 
   if (isStay) {
-    representativeName = booking.stayExecutive || booking.stayExecutiveName || booking.executiveName || booking.executiveAssigned || booking.technicianAssigned || 'Balaji Varma';
+    representativeName = booking.stayExecutive || booking.stayExecutiveName || booking.executiveName || booking.executiveAssigned || booking.technicianAssigned || 'Unassigned';
     representativeRole = 'Stay Executive';
     RepIcon = Building;
-    repId = 'EXEC-201';
-    repPhone = '+91 96550 44001';
+    repId = booking.executiveId || '-';
+    repPhone = booking.executivePhone || '-';
   } else if (isTravel) {
-    representativeName = booking.travelExecutive || booking.travelExecutiveName || booking.executiveName || booking.executiveAssigned || booking.technicianAssigned || 'Manikandan S';
+    representativeName = booking.travelExecutive || booking.travelExecutiveName || booking.executiveName || booking.executiveAssigned || booking.technicianAssigned || 'Unassigned';
     representativeRole = 'Travel Executive';
     RepIcon = Car;
-    repId = 'EXEC-202';
-    repPhone = '+91 96550 44002';
+    repId = booking.executiveId || '-';
+    repPhone = booking.executivePhone || '-';
   }
 
   const isCardMember = booking.membershipTier && 
@@ -146,7 +146,7 @@ export function BookingDetailsModal({ booking, isOpen, onClose }) {
   const timelineEvents = buildTimeline();
 
   // Pricing calculations
-  const baseCharge = Number(booking.charge) || 1200;
+  const baseCharge = Number(booking.charge) || 0;
   const discountRate = normalizedTier === 'Diamond' ? 0.20 : normalizedTier === 'Gold' ? 0.15 : normalizedTier === 'Silver' ? 0.10 : 0;
   const discountAmount = isCardMember ? Math.round(baseCharge * discountRate) : 0;
   const netAmount = baseCharge - discountAmount;
@@ -179,7 +179,7 @@ export function BookingDetailsModal({ booking, isOpen, onClose }) {
                   Customer Details
                 </span>
                 <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
-                  ID: {booking.customerId || 'CUST-101'}
+                  ID: {booking.customerId || '-'}
                 </span>
               </div>
 

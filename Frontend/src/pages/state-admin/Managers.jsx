@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { dataService } from '../../services/dataService';
+import { useAuth } from '../../context/AuthContext';
 import { DataTable } from '../../components/DataTable';
 import { StatusBadge } from '../../components/Badge';
+import { ManagerApprovalModal } from '../../components/ManagerApprovalModal';
 import { useTheme } from '../../context/ThemeContext';
 import {
   UserCog,
@@ -14,7 +17,13 @@ import {
   ShieldCheck,
   TrendingUp,
   CheckCircle2,
-  Briefcase
+  Clock,
+  Briefcase,
+  AlertCircle,
+  Eye,
+  Check,
+  RefreshCw,
+  Filter
 } from 'lucide-react';
 
 const LEVEL_CONFIGS = {
@@ -27,48 +36,7 @@ const LEVEL_CONFIGS = {
     icon: Award,
     tableTitle: 'State Operations Management Directory',
     tableSubtitle: 'Master executive managers overseeing district nodes, strategic ops, and state compliance',
-    exportFile: 'state_managers.csv',
-    defaultData: [
-      {
-        id: 'MGR-STA-01',
-        name: 'Venkatesan Balasubramanian',
-        phone: '+91 94432 10101',
-        email: 'venkat.statemgr@forgeindia.in',
-        jurisdiction: 'Tamil Nadu (State-wide)',
-        assignedArea: 'All 38 Districts Administration',
-        subordinates: 38,
-        activeTeams: 142,
-        performanceSla: '99.2%',
-        status: 'Active',
-        joinedDate: '01 Dec 2023'
-      },
-      {
-        id: 'MGR-STA-02',
-        name: 'Meenakshi Sundaram S',
-        phone: '+91 94432 10102',
-        email: 'meenakshi.statemgr@forgeindia.in',
-        jurisdiction: 'Tamil Nadu (North & Central)',
-        assignedArea: '18 Districts Field Governance',
-        subordinates: 18,
-        activeTeams: 86,
-        performanceSla: '98.7%',
-        status: 'Active',
-        joinedDate: '15 Jan 2024'
-      },
-      {
-        id: 'MGR-STA-03',
-        name: 'Anandapadmanabhan R',
-        phone: '+91 94432 10103',
-        email: 'anand.statemgr@forgeindia.in',
-        jurisdiction: 'Tamil Nadu (South & West)',
-        assignedArea: '20 Districts Field Governance',
-        subordinates: 20,
-        activeTeams: 94,
-        performanceSla: '98.9%',
-        status: 'Active',
-        joinedDate: '10 Mar 2024'
-      }
-    ]
+    exportFile: 'state_managers.csv'
   },
   district: {
     title: 'District Managers',
@@ -79,61 +47,7 @@ const LEVEL_CONFIGS = {
     icon: Building2,
     tableTitle: 'District Manager Roster',
     tableSubtitle: 'Regional management leads managing division clusters, field supervisors, and admin operations',
-    exportFile: 'district_managers.csv',
-    defaultData: [
-      {
-        id: 'MGR-DST-01',
-        name: 'Senthil Kumar Duraisamy',
-        phone: '+91 98422 33401',
-        email: 'senthil.salem@forgeindia.in',
-        jurisdiction: 'Salem District',
-        assignedArea: 'Salem North, South & Attur Divisions',
-        subordinates: 8,
-        activeTeams: 42,
-        performanceSla: '98.5%',
-        status: 'Active',
-        joinedDate: '01 Feb 2024'
-      },
-      {
-        id: 'MGR-DST-02',
-        name: 'Kavitha Radhakrishnan',
-        phone: '+91 98422 33402',
-        email: 'kavitha.cbe@forgeindia.in',
-        jurisdiction: 'Coimbatore District',
-        assignedArea: 'Coimbatore North, South & Pollachi',
-        subordinates: 9,
-        activeTeams: 54,
-        performanceSla: '99.1%',
-        status: 'Active',
-        joinedDate: '15 Feb 2024'
-      },
-      {
-        id: 'MGR-DST-03',
-        name: 'Rajesh Narayanan M',
-        phone: '+91 98422 33403',
-        email: 'rajesh.madurai@forgeindia.in',
-        jurisdiction: 'Madurai District',
-        assignedArea: 'Madurai Urban & Melur Divisions',
-        subordinates: 6,
-        activeTeams: 38,
-        performanceSla: '97.8%',
-        status: 'Active',
-        joinedDate: '01 Mar 2024'
-      },
-      {
-        id: 'MGR-DST-04',
-        name: 'Subashree Srinivasan',
-        phone: '+91 98422 33404',
-        email: 'subashree.chennai@forgeindia.in',
-        jurisdiction: 'Chennai Central',
-        assignedArea: 'Central Metro & North Maritime Zones',
-        subordinates: 12,
-        activeTeams: 68,
-        performanceSla: '99.4%',
-        status: 'Active',
-        joinedDate: '10 Mar 2024'
-      }
-    ]
+    exportFile: 'district_managers.csv'
   },
   divisional: {
     title: 'Divisional Managers',
@@ -144,48 +58,7 @@ const LEVEL_CONFIGS = {
     icon: Layers,
     tableTitle: 'Divisional Manager Directory',
     tableSubtitle: 'Zonal hub leaders monitoring daily dispatch, field workforce, and local customer escalations',
-    exportFile: 'divisional_managers.csv',
-    defaultData: [
-      {
-        id: 'MGR-DIV-01',
-        name: 'Manoj Prabhakar K',
-        phone: '+91 97890 12001',
-        email: 'manoj.salemnorth@forgeindia.in',
-        jurisdiction: 'Salem North Division',
-        assignedArea: 'PIN 636001, 636002 & Shevapet Hub',
-        subordinates: 14,
-        activeTeams: 26,
-        performanceSla: '98.2%',
-        status: 'Active',
-        joinedDate: '12 Apr 2024'
-      },
-      {
-        id: 'MGR-DIV-02',
-        name: 'Revathi Sivasankaran',
-        phone: '+91 97890 12002',
-        email: 'revathi.salemsouth@forgeindia.in',
-        jurisdiction: 'Salem South Division',
-        assignedArea: 'PIN 636003, 636004 & Gugai Hub',
-        subordinates: 12,
-        activeTeams: 22,
-        performanceSla: '97.9%',
-        status: 'Active',
-        joinedDate: '20 Apr 2024'
-      },
-      {
-        id: 'MGR-DIV-03',
-        name: 'Ganesh Moorthy V',
-        phone: '+91 97890 12003',
-        email: 'ganesh.cbecentral@forgeindia.in',
-        jurisdiction: 'Coimbatore Central Division',
-        assignedArea: 'PIN 641001, 641002 & DB Road Hub',
-        subordinates: 18,
-        activeTeams: 34,
-        performanceSla: '99.0%',
-        status: 'Active',
-        joinedDate: '01 May 2024'
-      }
-    ]
+    exportFile: 'divisional_managers.csv'
   },
   pincode: {
     title: 'Pincode Managers',
@@ -196,84 +69,117 @@ const LEVEL_CONFIGS = {
     icon: MapPin,
     tableTitle: 'Pincode Micro-Zone Manager Roster',
     tableSubtitle: 'Last-mile facility managers and field operations leads assigned to postal zones',
-    exportFile: 'pincode_managers.csv',
-    defaultData: [
-      {
-        id: 'MGR-PIN-01',
-        name: 'Saravanan Muthuraj',
-        phone: '+91 98409 66001',
-        email: 'saravanan.636001@forgeindia.in',
-        jurisdiction: 'PIN: 636001',
-        assignedArea: 'Salem Town Fort Facility',
-        subordinates: 6,
-        activeTeams: 12,
-        performanceSla: '98.8%',
-        status: 'Active',
-        joinedDate: '01 Jun 2024'
-      },
-      {
-        id: 'MGR-PIN-02',
-        name: 'Deepak Chandrasekar',
-        phone: '+91 98409 66002',
-        email: 'deepak.636002@forgeindia.in',
-        jurisdiction: 'PIN: 636002',
-        assignedArea: 'Shevapet Market Facility',
-        subordinates: 5,
-        activeTeams: 10,
-        performanceSla: '97.5%',
-        status: 'Active',
-        joinedDate: '10 Jun 2024'
-      },
-      {
-        id: 'MGR-PIN-03',
-        name: 'Bhuvaneshwari P',
-        phone: '+91 98409 66003',
-        email: 'bhuvana.636003@forgeindia.in',
-        jurisdiction: 'PIN: 636003',
-        assignedArea: 'Ammapet Colony Service Center',
-        subordinates: 7,
-        activeTeams: 14,
-        performanceSla: '99.1%',
-        status: 'Active',
-        joinedDate: '18 Jun 2024'
-      },
-      {
-        id: 'MGR-PIN-04',
-        name: 'Karthikeyan Natarajan',
-        phone: '+91 98409 66004',
-        email: 'karthi.636004@forgeindia.in',
-        jurisdiction: 'PIN: 636004',
-        assignedArea: 'Gugai Industrial Yard',
-        subordinates: 4,
-        activeTeams: 9,
-        performanceSla: '98.2%',
-        status: 'Active',
-        joinedDate: '25 Jun 2024'
-      }
-    ]
+    exportFile: 'pincode_managers.csv'
   }
 };
 
-export function StateManagers({ level = 'state' }) {
+export function StateManagers({ level }) {
   const { isDark } = useTheme();
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Determine active level from path if not passed explicitly
-  let activeLevel = level;
+  const [managers, setManagers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all' | 'pending' | 'active'
+  const [selectedManager, setSelectedManager] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // Identify admin scope base path
+  const userRole = (user?.role || '').toLowerCase();
+  const basePath = userRole.includes('district')
+    ? '/district-admin/managers'
+    : userRole.includes('division') || userRole.includes('divisional')
+    ? '/divisional-admin/managers'
+    : userRole.includes('pincode')
+    ? '/pincode-admin/managers'
+    : '/state-admin/managers';
+
+  // Determine active level from path or prop
+  let activeLevel = 'state';
   if (location.pathname.includes('/managers/district')) activeLevel = 'district';
   else if (location.pathname.includes('/managers/divisional')) activeLevel = 'divisional';
   else if (location.pathname.includes('/managers/pincode')) activeLevel = 'pincode';
-  else if (location.pathname.includes('/managers/state') || location.pathname.endsWith('/managers')) activeLevel = 'state';
+  else if (location.pathname.includes('/managers/state')) activeLevel = 'state';
+  else if (level) activeLevel = level;
+  else {
+    activeLevel = userRole.includes('district')
+      ? 'district'
+      : userRole.includes('division') || userRole.includes('divisional')
+      ? 'divisional'
+      : userRole.includes('pincode')
+      ? 'pincode'
+      : 'state';
+  }
 
   const config = LEVEL_CONFIGS[activeLevel] || LEVEL_CONFIGS.state;
-  const managers = config.defaultData;
 
-  const totalManagersCount = managers.length;
-  const totalSubordinatesSum = managers.reduce((acc, m) => acc + (m.subordinates || 0), 0);
-  const totalTeamsSum = managers.reduce((acc, m) => acc + (m.activeTeams || 0), 0);
+  // Available level tabs based on admin hierarchy
+  const availableTabs = useMemo(() => {
+    const all = [
+      { id: 'state', label: 'State', path: `${basePath}/state` },
+      { id: 'district', label: 'District', path: `${basePath}/district` },
+      { id: 'divisional', label: 'Divisional', path: `${basePath}/divisional` },
+      { id: 'pincode', label: 'Pincode', path: `${basePath}/pincode` }
+    ];
 
-  const LevelIcon = config.icon;
+    if (userRole.includes('district')) {
+      return all.filter(t => t.id !== 'state');
+    }
+    if (userRole.includes('division') || userRole.includes('divisional')) {
+      return all.filter(t => t.id === 'divisional' || t.id === 'pincode');
+    }
+    if (userRole.includes('pincode')) {
+      return all.filter(t => t.id === 'pincode');
+    }
+    return all;
+  }, [userRole, basePath]);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const res = await dataService.getManagers({ level: activeLevel });
+      if (res.success && Array.isArray(res.subordinates || res.data)) {
+        setManagers(res.subordinates || res.data || []);
+      } else {
+        setManagers([]);
+      }
+    } catch (err) {
+      console.error('Failed to load managers directory:', err);
+      setManagers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, [activeLevel]);
+
+  // Filtered managers based on status tab
+  const filteredManagers = useMemo(() => {
+    if (statusFilter === 'pending') {
+      return managers.filter(m => m.status === 'under_review' || m.status === 'pending');
+    }
+    if (statusFilter === 'active') {
+      return managers.filter(m => m.status === 'active');
+    }
+    return managers;
+  }, [managers, statusFilter]);
+
+  const totalCount = managers.length;
+  const pendingCount = managers.filter(m => m.status === 'under_review' || m.status === 'pending').length;
+  const activeCount = managers.filter(m => m.status === 'active').length;
+
+  const handleOpenModal = (manager) => {
+    setSelectedManager(manager);
+    setModalOpen(true);
+  };
+
+  const handleManagerUpdated = (updatedManager) => {
+    setManagers(prev => prev.map(m => (m.id === updatedManager.id || m._id === updatedManager._id ? updatedManager : m)));
+    loadData();
+  };
 
   const columns = [
     {
@@ -281,8 +187,8 @@ export function StateManagers({ level = 'state' }) {
       accessor: 'name',
       render: (row) => (
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50">
-            <UserCog className="w-4 h-4" />
+          <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50 flex items-center justify-center font-bold text-xs shrink-0">
+            {row.name ? row.name.charAt(0).toUpperCase() : <UserCog className="w-4 h-4" />}
           </div>
           <div>
             <div className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
@@ -297,15 +203,15 @@ export function StateManagers({ level = 'state' }) {
       )
     },
     {
-      header: 'Jurisdiction & Area',
+      header: 'Jurisdiction & Territory',
       accessor: 'jurisdiction',
       render: (row) => (
         <div>
           <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-            {row.jurisdiction}
+            {row.jurisdiction || 'Tamil Nadu'}
           </div>
-          <div className="text-[10px] text-slate-500 dark:text-slate-400">
-            {row.assignedArea}
+          <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[200px]" title={row.assignedArea}>
+            {row.assignedArea || 'State Zone'}
           </div>
         </div>
       )
@@ -315,39 +221,16 @@ export function StateManagers({ level = 'state' }) {
       accessor: 'phone',
       render: (row) => (
         <span className="text-xs text-slate-700 dark:text-slate-300 font-mono flex items-center gap-1">
-          <Phone className="w-3 h-3 text-slate-400" /> {row.phone}
+          <Phone className="w-3 h-3 text-slate-400" /> {row.mobile || row.phone}
         </span>
       )
     },
     {
-      header: 'Subordinates & Teams',
-      accessor: 'subordinates',
-      render: (row) => (
-        <div>
-          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-            {row.subordinates} Leads Supervised
-          </div>
-          <div className="text-[10px] text-slate-500 dark:text-slate-400">
-            {row.activeTeams} Active Teams
-          </div>
-        </div>
-      )
-    },
-    {
-      header: 'Ops SLA',
-      accessor: 'performanceSla',
-      render: (row) => (
-        <span className="font-bold text-emerald-600 dark:text-emerald-400 text-xs">
-          {row.performanceSla}
-        </span>
-      )
-    },
-    {
-      header: 'Joined Date',
+      header: 'Applied / Joined Date',
       accessor: 'joinedDate',
       render: (row) => (
         <span className="text-xs text-slate-500 dark:text-slate-400">
-          {row.joinedDate}
+          {row.joinedDate || 'Recently Registered'}
         </span>
       )
     },
@@ -355,38 +238,66 @@ export function StateManagers({ level = 'state' }) {
       header: 'Status',
       accessor: 'status',
       render: (row) => <StatusBadge status={row.status || 'Active'} />
+    },
+    {
+      header: 'Action',
+      accessor: 'actions',
+      render: (row) => {
+        const isPending = row.status === 'under_review' || row.status === 'pending';
+        return (
+          <div className="flex items-center gap-2">
+            {isPending ? (
+              <button
+                type="button"
+                onClick={() => handleOpenModal(row)}
+                className="px-2.5 py-1.5 rounded-lg text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-sm shadow-amber-500/20 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <AlertCircle className="w-3.5 h-3.5" />
+                Review & Approve
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleOpenModal(row)}
+                className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <Eye className="w-3.5 h-3.5 text-slate-500" />
+                View Details
+              </button>
+            )}
+          </div>
+        );
+      }
     }
   ];
 
   return (
     <div className="space-y-6">
-      {/* Header & Level Tabs */}
+      {/* Header & Hierarchy Level Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">{config.title}</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{config.subtitle}</p>
         </div>
 
-        {/* Level Switcher */}
-        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto">
-          {[
-            { id: 'state', label: 'State', path: '/state-admin/managers/state' },
-            { id: 'district', label: 'District', path: '/state-admin/managers/district' },
-            { id: 'divisional', label: 'Divisional', path: '/state-admin/managers/divisional' },
-            { id: 'pincode', label: 'Pincode', path: '/state-admin/managers/pincode' }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => navigate(tab.path)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeLevel === tab.id
-                  ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+        {/* Level Switcher (Only show if multiple levels are available for this admin) */}
+        {availableTabs.length > 1 && (
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto">
+            {availableTabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => navigate(tab.path)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeLevel === tab.id
+                    ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Metric Cards */}
@@ -396,36 +307,125 @@ export function StateManagers({ level = 'state' }) {
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Total {config.title}</span>
             <UserCog className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
           </div>
-          <div className="text-lg font-bold text-slate-900 dark:text-white mt-1.5">{totalManagersCount}</div>
-          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">100% active roster</div>
+          <div className="text-lg font-bold text-slate-900 dark:text-white mt-1.5">{totalCount}</div>
+          <div className="text-[10px] text-slate-500 font-medium mt-0.5">Jurisdiction directory</div>
         </div>
 
-        <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+        <div className={`p-3.5 rounded-2xl border shadow-sm transition ${
+          pendingCount > 0
+            ? 'bg-amber-50/50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/60'
+            : 'bg-white dark:bg-slate-900/60 border-slate-200/80 dark:border-slate-800/80'
+        }`}>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Supervised Staff</span>
-            <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <span className={`text-xs font-semibold ${pendingCount > 0 ? 'text-amber-700 dark:text-amber-300 font-bold' : 'text-slate-500 dark:text-slate-400'}`}>
+              Pending Approvals
+            </span>
+            <AlertCircle className={`w-4 h-4 ${pendingCount > 0 ? 'text-amber-600 animate-pulse' : 'text-slate-400'}`} />
           </div>
-          <div className="text-lg font-bold text-slate-900 dark:text-white mt-1.5">{totalSubordinatesSum}</div>
-          <div className="text-[10px] text-blue-600 dark:text-blue-400 font-medium mt-0.5">Direct reporting leads</div>
-        </div>
-
-        <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Field Units</span>
-            <Briefcase className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+          <div className={`text-lg font-bold mt-1.5 ${pendingCount > 0 ? 'text-amber-700 dark:text-amber-300' : 'text-slate-900 dark:text-white'}`}>
+            {pendingCount}
           </div>
-          <div className="text-lg font-bold text-slate-900 dark:text-white mt-1.5">{totalTeamsSum}</div>
-          <div className="text-[10px] text-amber-600 dark:text-amber-400 font-medium mt-0.5">Active field teams</div>
+          <div className={`text-[10px] font-medium mt-0.5 ${pendingCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500'}`}>
+            {pendingCount > 0 ? 'Awaiting your admin review' : 'All registrations verified'}
+          </div>
         </div>
 
         <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Average Ops SLA</span>
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Active Roster</span>
             <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <div className="text-lg font-bold text-slate-900 dark:text-white mt-1.5">98.8%</div>
-          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">Met monthly target</div>
+          <div className="text-lg font-bold text-slate-900 dark:text-white mt-1.5">{activeCount}</div>
+          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">Approved & active</div>
         </div>
+
+        <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Territory Coverage</span>
+            <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div className="text-lg font-bold text-slate-900 dark:text-white mt-1.5">100%</div>
+          <div className="text-[10px] text-blue-600 dark:text-blue-400 font-medium mt-0.5">Hierarchical alignment</div>
+        </div>
+      </div>
+
+      {/* Pending Approvals Quick Alert Banner */}
+      {pendingCount > 0 && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 border border-amber-200/80 dark:border-amber-800/60 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 shrink-0">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-amber-900 dark:text-amber-200">
+                {pendingCount} New Manager Registration{pendingCount > 1 ? 's' : ''} Awaiting Admin Approval
+              </h4>
+              <p className="text-[11px] text-amber-700/90 dark:text-amber-400 mt-0.5">
+                Managers cannot access their dashboard portal until their KYC documents are reviewed and approved.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setStatusFilter('pending')}
+            className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-amber-900 bg-amber-200 hover:bg-amber-300 dark:bg-amber-800 dark:text-amber-100 dark:hover:bg-amber-700 transition self-start sm:self-auto cursor-pointer"
+          >
+            Filter Pending Requests
+          </button>
+        </div>
+      )}
+
+      {/* Status Filter Tabs & Refresh */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl">
+          <button
+            type="button"
+            onClick={() => setStatusFilter('all')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+              statusFilter === 'all'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+            }`}
+          >
+            All Managers ({totalCount})
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatusFilter('pending')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
+              statusFilter === 'pending'
+                ? 'bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+            }`}
+          >
+            <span>Pending Approvals</span>
+            {pendingCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-white">
+                {pendingCount}
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatusFilter('active')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+              statusFilter === 'active'
+                ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+            }`}
+          >
+            Active Managers ({activeCount})
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={loadData}
+          className="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+          title="Refresh List"
+        >
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+        </button>
       </div>
 
       {/* Data Table */}
@@ -433,10 +433,19 @@ export function StateManagers({ level = 'state' }) {
         title={config.tableTitle}
         subtitle={config.tableSubtitle}
         columns={columns}
-        data={managers}
+        data={filteredManagers}
+        onRowClick={(row) => handleOpenModal(row)}
+        loading={loading}
         searchPlaceholder={`Search ${config.title.toLowerCase()} by name, jurisdiction, or phone...`}
-        searchFields={['name', 'email', 'jurisdiction', 'assignedArea', 'phone']}
         exportFileName={config.exportFile}
+      />
+
+      {/* Manager Registration & KYC Review Modal */}
+      <ManagerApprovalModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        manager={selectedManager}
+        onManagerUpdated={handleManagerUpdated}
       />
     </div>
   );

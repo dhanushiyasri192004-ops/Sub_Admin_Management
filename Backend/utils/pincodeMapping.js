@@ -1,9 +1,33 @@
 /**
  * Comprehensive Pincode to Location Hierarchy and Assigned Team Directory
- * Automatically maps any postal code to:
+ * Automatically maps postal codes to:
  * State -> District -> Division -> Pincode
- * And resolves the responsible Pincode Admin, Pincode Manager, and Pincode Agent.
+ * Resolves assigned Pincode Admin, Pincode Manager, and Pincode Agent without hardcoded mock personas.
  */
+
+const defaultTeam = {
+  pincodeAdmin: {
+    id: '-',
+    name: 'Unassigned',
+    role: 'Pincode Admin',
+    phone: '-',
+    email: '-'
+  },
+  pincodeManager: {
+    id: '-',
+    name: 'Unassigned',
+    role: 'Pincode Manager',
+    phone: '-',
+    email: '-'
+  },
+  pincodeAgent: {
+    id: '-',
+    name: 'Unassigned',
+    role: 'Pincode Agent',
+    phone: '-',
+    email: '-'
+  }
+};
 
 const PINCODE_MAP = {
   // Salem District - Salem North Division
@@ -13,27 +37,7 @@ const PINCODE_MAP = {
     division: 'Salem North',
     pincode: '636001',
     areaName: 'Salem Town Fort',
-    pincodeAdmin: {
-      id: 'ADM-PIN-01',
-      name: 'Priya Narayanan',
-      role: 'Pincode Admin',
-      phone: '+91 98765 43213',
-      email: 'priya.salem636001@forgeindia.in'
-    },
-    pincodeManager: {
-      id: 'MGR-PIN-01',
-      name: 'Saravanan Muthuraj',
-      role: 'Pincode Manager',
-      phone: '+91 98409 66001',
-      email: 'saravanan.636001@forgeindia.in'
-    },
-    pincodeAgent: {
-      id: 'AGT-PIN-01',
-      name: 'Naveen Kumar M',
-      role: 'Pincode Agent',
-      phone: '+91 98940 55103',
-      email: 'naveen.agent@gmail.com'
-    }
+    ...defaultTeam
   },
   '636002': {
     state: 'Tamil Nadu',
@@ -41,55 +45,15 @@ const PINCODE_MAP = {
     division: 'Salem North',
     pincode: '636002',
     areaName: 'Shevapet & Market Area',
-    pincodeAdmin: {
-      id: 'ADM-PIN-02',
-      name: 'Suresh Raina',
-      role: 'Pincode Admin',
-      phone: '+91 98765 43214',
-      email: 'suresh.salem636002@forgeindia.in'
-    },
-    pincodeManager: {
-      id: 'MGR-PIN-02',
-      name: 'Deepak Chandrasekar',
-      role: 'Pincode Manager',
-      phone: '+91 98409 66002',
-      email: 'deepak.636002@forgeindia.in'
-    },
-    pincodeAgent: {
-      id: 'AGT-PIN-02',
-      name: 'Dinesh Karthik R',
-      role: 'Pincode Agent',
-      phone: '+91 98940 88201',
-      email: 'dinesh.pincode@gmail.com'
-    }
+    ...defaultTeam
   },
   '636007': {
     state: 'Tamil Nadu',
     district: 'Salem',
     division: 'Salem North',
     pincode: '636007',
-    areaName: 'Alagapuram & Fairlands Zone',
-    pincodeAdmin: {
-      id: 'ADM-PIN-07',
-      name: 'Kavitha Shanmugam',
-      role: 'Pincode Admin',
-      phone: '+91 98765 43217',
-      email: 'kavitha.salem636007@forgeindia.in'
-    },
-    pincodeManager: {
-      id: 'MGR-PIN-07',
-      name: 'Ramesh Balakrishnan',
-      role: 'Pincode Manager',
-      phone: '+91 98409 66007',
-      email: 'ramesh.636007@forgeindia.in'
-    },
-    pincodeAgent: {
-      id: 'AGT-PIN-07',
-      name: 'Vigneshwaran S',
-      role: 'Pincode Agent',
-      phone: '+91 98940 88207',
-      email: 'vignesh.agent@gmail.com'
-    }
+    areaName: 'Alagapuram',
+    ...defaultTeam
   },
 
   // Salem District - Salem South Division
@@ -99,55 +63,59 @@ const PINCODE_MAP = {
     division: 'Salem South',
     pincode: '636003',
     areaName: 'Ammapet Colony',
-    pincodeAdmin: {
-      id: 'ADM-PIN-03',
-      name: 'Venkatesh Babu',
-      role: 'Pincode Admin',
-      phone: '+91 98765 43215',
-      email: 'venkatesh.salem636003@forgeindia.in'
-    },
-    pincodeManager: {
-      id: 'MGR-PIN-03',
-      name: 'Bhuvaneshwari P',
-      role: 'Pincode Manager',
-      phone: '+91 98409 66003',
-      email: 'bhuvana.636003@forgeindia.in'
-    },
-    pincodeAgent: {
-      id: 'AGT-PIN-03',
-      name: 'Pravin Chandran',
-      role: 'Pincode Agent',
-      phone: '+91 98940 88202',
-      email: 'pravin.pincode@gmail.com'
-    }
+    ...defaultTeam
   },
   '636004': {
     state: 'Tamil Nadu',
     district: 'Salem',
     division: 'Salem South',
     pincode: '636004',
-    areaName: 'Gugai Industrial Area',
-    pincodeAdmin: {
-      id: 'ADM-PIN-04',
-      name: 'Meena Kumari',
-      role: 'Pincode Admin',
-      phone: '+91 98765 43216',
-      email: 'meena.salem636004@forgeindia.in'
-    },
-    pincodeManager: {
-      id: 'MGR-PIN-04',
-      name: 'Karthikeyan Natarajan',
-      role: 'Pincode Manager',
-      phone: '+91 98409 66004',
-      email: 'karthi.636004@forgeindia.in'
-    },
-    pincodeAgent: {
-      id: 'AGT-PIN-04',
-      name: 'Murugesan K',
-      role: 'Pincode Agent',
-      phone: '+91 98940 88204',
-      email: 'murugesan.agent@gmail.com'
-    }
+    areaName: 'Gugai',
+    ...defaultTeam
+  },
+  '636006': {
+    state: 'Tamil Nadu',
+    district: 'Salem',
+    division: 'Salem South',
+    pincode: '636006',
+    areaName: 'Kallanguthu',
+    ...defaultTeam
+  },
+
+  // Salem District - Attur Division
+  '636102': {
+    state: 'Tamil Nadu',
+    district: 'Salem',
+    division: 'Attur',
+    pincode: '636102',
+    areaName: 'Attur Town',
+    ...defaultTeam
+  },
+  '636108': {
+    state: 'Tamil Nadu',
+    district: 'Salem',
+    division: 'Attur',
+    pincode: '636108',
+    areaName: 'Thalaivasal',
+    ...defaultTeam
+  },
+
+  // Salem District - Mettur Division
+  '636401': {
+    state: 'Tamil Nadu',
+    district: 'Salem',
+    division: 'Mettur',
+    pincode: '636401',
+    areaName: 'Mettur Dam',
+    ...defaultTeam
+  },
+  '636402': {
+    state: 'Tamil Nadu',
+    district: 'Salem',
+    division: 'Mettur',
+    pincode: '636402',
+    areaName: 'Mecheri',
+    ...defaultTeam
   },
 
   // Coimbatore District - Coimbatore Central
@@ -157,27 +125,7 @@ const PINCODE_MAP = {
     division: 'Coimbatore Central',
     pincode: '641001',
     areaName: 'Town Hall & Big Bazaar',
-    pincodeAdmin: {
-      id: 'ADM-PIN-11',
-      name: 'Arun Kumar',
-      role: 'Pincode Admin',
-      phone: '+91 98765 43221',
-      email: 'arun.cbe641001@forgeindia.in'
-    },
-    pincodeManager: {
-      id: 'MGR-PIN-11',
-      name: 'Swaminathan V',
-      role: 'Pincode Manager',
-      phone: '+91 98409 66011',
-      email: 'swami.641001@forgeindia.in'
-    },
-    pincodeAgent: {
-      id: 'AGT-PIN-11',
-      name: 'Kishore Kumar',
-      role: 'Pincode Agent',
-      phone: '+91 98940 88211',
-      email: 'kishore.agent@gmail.com'
-    }
+    ...defaultTeam
   },
   '641002': {
     state: 'Tamil Nadu',
@@ -185,33 +133,12 @@ const PINCODE_MAP = {
     division: 'Coimbatore Central',
     pincode: '641002',
     areaName: 'RS Puram & DB Road',
-    pincodeAdmin: {
-      id: 'ADM-PIN-12',
-      name: 'Deepa Rajan',
-      role: 'Pincode Admin',
-      phone: '+91 98765 43222',
-      email: 'deepa.cbe641002@forgeindia.in'
-    },
-    pincodeManager: {
-      id: 'MGR-PIN-12',
-      name: 'Prasanna Venkatesh',
-      role: 'Pincode Manager',
-      phone: '+91 98409 66012',
-      email: 'prasanna.641002@forgeindia.in'
-    },
-    pincodeAgent: {
-      id: 'AGT-PIN-12',
-      name: 'Manoj Prabhakar',
-      role: 'Pincode Agent',
-      phone: '+91 98940 88212',
-      email: 'manoj.agent@gmail.com'
-    }
+    ...defaultTeam
   }
 };
 
 /**
  * Resolve location hierarchy and assigned team for a given pincode.
- * If pincode is not predefined, generates a deterministic mapping based on prefix/format.
  */
 function resolvePincodeHierarchy(pincode) {
   const pin = String(pincode || '').trim();
@@ -219,7 +146,7 @@ function resolvePincodeHierarchy(pincode) {
     return PINCODE_MAP[pin];
   }
 
-  // Fallback heuristic for any custom pincode in Tamil Nadu or other states
+  // Fallback heuristic for custom pincodes
   let state = 'Tamil Nadu';
   let district = 'Salem';
   let division = 'Salem North';
@@ -245,27 +172,7 @@ function resolvePincodeHierarchy(pincode) {
     division,
     pincode: pin || '636001',
     areaName: `${division} Local Zone`,
-    pincodeAdmin: {
-      id: `ADM-PIN-${pin.slice(-3) || '999'}`,
-      name: `Zonal Admin (${pin || 'Default'})`,
-      role: 'Pincode Admin',
-      phone: '+91 98765 43299',
-      email: `admin.${pin}@forgeindia.in`
-    },
-    pincodeManager: {
-      id: `MGR-PIN-${pin.slice(-3) || '999'}`,
-      name: `Operations Manager (${pin || 'Default'})`,
-      role: 'Pincode Manager',
-      phone: '+91 98409 66099',
-      email: `manager.${pin}@forgeindia.in`
-    },
-    pincodeAgent: {
-      id: `AGT-PIN-${pin.slice(-3) || '999'}`,
-      name: `Field Agent (${pin || 'Default'})`,
-      role: 'Pincode Agent',
-      phone: '+91 98940 88299',
-      email: `agent.${pin}@gmail.com`
-    }
+    ...defaultTeam
   };
 }
 

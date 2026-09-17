@@ -198,7 +198,7 @@ export function PincodeAgentPayments() {
               required
               value={reqAgentName}
               onChange={(e) => setReqAgentName(e.target.value)}
-              placeholder="e.g. Thirunavukkarasu R"
+              placeholder="e.g. Enter agent name"
               className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
             />
           </div>

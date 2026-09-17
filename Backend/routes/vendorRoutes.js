@@ -2,16 +2,32 @@ const express = require('express');
 const router = express.Router();
 const vendorController = require('../controllers/vendorController');
 const authMiddleware = require('../middleware/authMiddleware');
-const locationMiddleware = require('../middleware/locationMiddleware');
+const { validateVendorCreationScope } = require('../middleware/scopeMiddleware');
 
 router.use(authMiddleware);
-router.use(locationMiddleware);
 
+// List vendors
 router.get('/', vendorController.getVendors);
-router.post('/', vendorController.createVendor);
+
+// Create vendor (supports both Sub-Admin and Field Manager)
+router.post('/', validateVendorCreationScope, vendorController.createVendor);
+
+// Lookup pincode hierarchy for automatic location autofill
 router.get('/lookup-pincode/:pincode', vendorController.lookupPincode);
+
+// Vendor by ID
 router.get('/:id', vendorController.getVendorById);
+
+// Update vendor profile
+router.put('/:id', vendorController.updateVendor);
+
+// Update vendor status
+router.patch('/:id/status', vendorController.updateVendorStatus);
+
+// Sub-Admin Stage 1 verification
 router.post('/:id/pincode-verify', vendorController.pincodeAdminVerifyVendor);
+
+// Sub-Admin Stage 2 KYC verification
 router.post('/:id/kyc-verify', vendorController.kycVerifyVendor);
 
 module.exports = router;

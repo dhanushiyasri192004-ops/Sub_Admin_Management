@@ -32,7 +32,7 @@ export function PincodeSettings() {
               <label className="block text-slate-600 dark:text-slate-400 mb-1 font-medium">Officer Name</label>
               <input
                 type="text"
-                defaultValue={user?.name || 'Priya Narayanan'}
+                defaultValue={user?.name || 'Pincode Admin'}
                 className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none"
               />
             </div>
@@ -41,7 +41,7 @@ export function PincodeSettings() {
               <input
                 type="text"
                 disabled
-                defaultValue={`PIN: ${pincode} (${user?.areaName || 'Salem Town Fort'})`}
+                defaultValue={`PIN: ${pincode} (${user?.areaName || 'Local Zone'})`}
                 className="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-500 font-semibold cursor-not-allowed"
               />
             </div>

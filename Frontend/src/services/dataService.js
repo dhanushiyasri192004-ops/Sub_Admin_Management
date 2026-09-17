@@ -161,5 +161,21 @@ export const dataService = {
   advanceAgentActivity: (id, data = {}) => apiRequest(`/operations/agents/activities/${id}/advance`, {
     method: 'PATCH',
     body: JSON.stringify(data)
+  }),
+
+  // Managers & Approvals
+  getManagers: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiRequest(`/managers${qs ? `?${qs}` : ''}`);
+  },
+  getManagerById: (id) => apiRequest(`/managers/${id}`),
+  approveManager: (id, data = {}) => apiRequest(`/managers/${id}/approve`, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  }),
+  rejectManager: (id, data = {}) => apiRequest(`/managers/${id}/reject`, {
+    method: 'POST',
+    body: JSON.stringify(data)
   })
 };
+

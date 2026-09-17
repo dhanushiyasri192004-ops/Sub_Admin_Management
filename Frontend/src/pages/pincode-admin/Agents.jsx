@@ -32,12 +32,16 @@ export function PincodeAgents() {
     setLoading(true);
     try {
       const res = await dataService.getAgents({ pincode });
-      if (res.success) setAgents(res.agents);
+      if (res.success && res.agents) setAgents(res.agents);
+      else setAgents([]);
 
       const actRes = await dataService.getAgentActivities({ pincode });
-      if (actRes.success) setActivities(actRes.activities);
+      if (actRes.success && actRes.activities) setActivities(actRes.activities);
+      else setActivities([]);
     } catch (e) {
       console.error(e);
+      setAgents([]);
+      setActivities([]);
     } finally {
       setLoading(false);
     }

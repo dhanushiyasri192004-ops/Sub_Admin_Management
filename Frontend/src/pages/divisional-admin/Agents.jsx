@@ -28,12 +28,16 @@ export function DivisionalAgents() {
     setLoading(true);
     try {
       const res = await dataService.getAgents({ division });
-      if (res.success) setAgents(res.agents);
+      if (res.success && res.agents) setAgents(res.agents);
+      else setAgents([]);
 
       const actRes = await dataService.getAgentActivities({ division });
-      if (actRes.success) setActivities(actRes.activities);
+      if (actRes.success && actRes.activities) setActivities(actRes.activities);
+      else setActivities([]);
     } catch (e) {
       console.error(e);
+      setAgents([]);
+      setActivities([]);
     } finally {
       setLoading(false);
     }

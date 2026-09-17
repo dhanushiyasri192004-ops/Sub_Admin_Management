@@ -144,10 +144,10 @@ export function Header({ setIsSidebarOpen }) {
           )}
         </button>
 
-        {/* Notification Bell with Badge */}
+        {/* Notification Bell */}
         <button
           type="button"
-          title="3 New Notifications"
+          title="Notifications"
           className={`relative p-2 rounded-xl border ${
             isDark
               ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-blue-400'
@@ -155,9 +155,6 @@ export function Header({ setIsSidebarOpen }) {
           } shadow-sm transition cursor-pointer`}
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm">
-            3
-          </span>
         </button>
 
         {/* User Profile */}
@@ -171,7 +168,7 @@ export function Header({ setIsSidebarOpen }) {
           />
           <div className="hidden sm:block text-left leading-tight">
             <div className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              {user.name || 'Ramesh Kumar'}
+              {user.name || 'Admin'}
             </div>
             <div className={`text-[10px] font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               {user.role}

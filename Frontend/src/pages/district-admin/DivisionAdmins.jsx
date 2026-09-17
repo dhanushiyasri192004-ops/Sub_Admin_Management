@@ -5,28 +5,7 @@ import { ShieldCheck, Mail, Phone, Layers } from 'lucide-react';
 
 export function DistrictDivisionAdmins() {
   const { user } = useAuth();
-  const [admins, setAdmins] = useState([
-    {
-      id: 'ADM-DIV-01',
-      name: 'Karthik Subramanian',
-      email: 'divisional_admin@admin.com',
-      phone: '+91 98401 23456',
-      division: 'Salem North',
-      pincodes: ['636001', '636002'],
-      status: 'Active',
-      joinedDate: '15 Jan 2026'
-    },
-    {
-      id: 'ADM-DIV-02',
-      name: 'Venkatesh Rao',
-      email: 'div_admin_south@admin.com',
-      phone: '+91 98402 88991',
-      division: 'Salem South',
-      pincodes: ['636003', '636004'],
-      status: 'Active',
-      joinedDate: '20 Jan 2026'
-    }
-  ]);
+  const [admins, setAdmins] = useState([]);
 
   const columns = [
     {

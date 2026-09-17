@@ -27,53 +27,21 @@ export function DeliveryPartnerDetailsModal({ partner, isOpen, onClose }) {
   const partnerName = partner.name || 'Delivery Partner';
   const partnerId = partner.id || 'DEL-TN-001';
   const phone = partner.phone || '+91 98405 11223';
-  const vehicleType = partner.vehicleType || (partner.vehicle ? partner.vehicle.split('(')[0].trim() : 'Motorcycle');
-  const registrationNumber = partner.registrationNumber || (partner.vehicle && partner.vehicle.includes('(') ? partner.vehicle.split('(')[1].replace(')', '').trim() : 'TN-30-AB-1234');
-  const district = partner.district || 'Salem';
-  const division = partner.division || 'Salem North';
-  const pincode = partner.pincode || '636001';
-  const rating = partner.rating || 4.8;
-  const totalTrips = partner.totalTrips || partner.completedDeliveries || 1240;
-  const shiftStatus = partner.shift || partner.shiftStatus || partner.status || 'On Duty';
+  const vehicleType = partner.vehicleType || (partner.vehicle ? partner.vehicle.split('(')[0].trim() : '-');
+  const registrationNumber = partner.registrationNumber || (partner.vehicle && partner.vehicle.includes('(') ? partner.vehicle.split('(')[1].replace(')', '').trim() : '-');
+  const district = partner.district || '-';
+  const division = partner.division || '-';
+  const pincode = partner.pincode || '-';
+  const rating = partner.rating || 0;
+  const totalTrips = partner.totalTrips || partner.completedDeliveries || 0;
+  const shiftStatus = partner.shift || partner.shiftStatus || partner.status || 'Available';
   const deliveryStatus = partner.deliveryStatus || (shiftStatus === 'On Duty' ? 'Active in Transit' : shiftStatus === 'Available' ? 'Idle - Ready for Dispatch' : 'Off Duty');
   const status = partner.partnerStatus || (partner.status === 'Inactive' ? 'Inactive' : 'Active');
   const verificationStatus = partner.verificationStatus || 'Verified';
 
-  // Sample recent deliveries if none provided
-  const recentDeliveries = partner.recentDeliveries || [
-    {
-      orderId: 'ORD-2026-881',
-      customer: 'Deepak Raj',
-      destination: `Fairlands, ${district} (${pincode})`,
-      items: '2 packages',
-      time: '10:45 AM Today',
-      status: shiftStatus === 'On Duty' ? 'In Transit' : 'Delivered'
-    },
-    {
-      orderId: 'ORD-2026-854',
-      customer: 'Swathi Radhakrishnan',
-      destination: `Meyyanur Main Road, ${district}`,
-      items: '1 package',
-      time: 'Yesterday, 04:20 PM',
-      status: 'Delivered'
-    },
-    {
-      orderId: 'ORD-2026-819',
-      customer: 'Vignesh Kumar',
-      destination: `Hasthampatti Junction, ${district}`,
-      items: '3 packages',
-      time: '05 Mar 2026, 01:15 PM',
-      status: 'Delivered'
-    },
-    {
-      orderId: 'ORD-2026-788',
-      customer: 'Anitha S',
-      destination: `Ammapet Colony, ${district}`,
-      items: '1 package',
-      time: '04 Mar 2026, 11:30 AM',
-      status: 'Delivered'
-    }
-  ];
+  // Recent deliveries
+  const recentDeliveries = partner.recentDeliveries || [];
+
 
   return (
     <Modal
@@ -266,27 +234,35 @@ export function DeliveryPartnerDetailsModal({ partner, isOpen, onClose }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                {recentDeliveries.map((trip, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
-                    <td className="py-3 pl-5 pr-4 font-mono font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
-                      {trip.orderId}
-                    </td>
-                    <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
-                      {trip.customer}
-                    </td>
-                    <td className="py-3 px-4 text-slate-600 dark:text-slate-300">
-                      <div className="truncate max-w-[220px]" title={trip.destination}>
-                        {trip.destination}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">
-                      {trip.time}
-                    </td>
-                    <td className="py-3 pl-4 pr-5 text-right whitespace-nowrap">
-                      <StatusBadge status={trip.status} />
+                {recentDeliveries.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-6 text-center text-slate-400 text-xs">
+                      No recent deliveries recorded
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  recentDeliveries.map((trip, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                      <td className="py-3 pl-5 pr-4 font-mono font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
+                        {trip.orderId}
+                      </td>
+                      <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
+                        {trip.customer}
+                      </td>
+                      <td className="py-3 px-4 text-slate-600 dark:text-slate-300">
+                        <div className="truncate max-w-[220px]" title={trip.destination}>
+                          {trip.destination}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">
+                        {trip.time}
+                      </td>
+                      <td className="py-3 pl-4 pr-5 text-right whitespace-nowrap">
+                        <StatusBadge status={trip.status} />
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

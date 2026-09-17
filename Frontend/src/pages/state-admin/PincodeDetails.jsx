@@ -31,128 +31,7 @@ export function StatePincodeDetails() {
 
   const [selectedPincode, setSelectedPincode] = useState(null);
 
-  const pincodes = [
-    {
-      pincode: '636001',
-      area: 'Salem Town Fort',
-      division: 'Salem North',
-      district: 'Salem',
-      admin: 'Priya Narayanan',
-      customers: 1420,
-      vendors: 2,
-      orders: 6,
-      totalManagers: 1,
-      totalAgents: 5,
-      pendingKYC: 1,
-      totalBookings: 4,
-      totalJobApplied: 8,
-      deliveryPartner: 3,
-      technician: 2,
-      executive: 2,
-      totalMembershipCards: 480,
-      status: 'Active'
-    },
-    {
-      pincode: '636002',
-      area: 'Shevapet & Market',
-      division: 'Salem North',
-      district: 'Salem',
-      admin: 'Suresh Raina',
-      customers: 980,
-      vendors: 2,
-      orders: 4,
-      totalManagers: 1,
-      totalAgents: 3,
-      pendingKYC: 1,
-      totalBookings: 2,
-      totalJobApplied: 7,
-      deliveryPartner: 2,
-      technician: 2,
-      executive: 1,
-      totalMembershipCards: 340,
-      status: 'Active'
-    },
-    {
-      pincode: '636003',
-      area: 'Ammapet Colony',
-      division: 'Salem South',
-      district: 'Salem',
-      admin: 'Venkatesh Babu',
-      customers: 1150,
-      vendors: 1,
-      orders: 5,
-      totalManagers: 1,
-      totalAgents: 4,
-      pendingKYC: 1,
-      totalBookings: 3,
-      totalJobApplied: 8,
-      deliveryPartner: 2,
-      technician: 2,
-      executive: 1,
-      totalMembershipCards: 360,
-      status: 'Active'
-    },
-    {
-      pincode: '636004',
-      area: 'Gugai Industrial Area',
-      division: 'Salem South',
-      district: 'Salem',
-      admin: 'Meena Kumari',
-      customers: 720,
-      vendors: 1,
-      orders: 3,
-      totalManagers: 1,
-      totalAgents: 2,
-      pendingKYC: 0,
-      totalBookings: 3,
-      totalJobApplied: 5,
-      deliveryPartner: 2,
-      technician: 2,
-      executive: 1,
-      totalMembershipCards: 240,
-      status: 'Active'
-    },
-    {
-      pincode: '641001',
-      area: 'Town Hall & Big Bazaar',
-      division: 'Coimbatore Central',
-      district: 'Coimbatore',
-      admin: 'Arun Kumar',
-      customers: 2300,
-      vendors: 3,
-      orders: 8,
-      totalManagers: 2,
-      totalAgents: 7,
-      pendingKYC: 2,
-      totalBookings: 6,
-      totalJobApplied: 14,
-      deliveryPartner: 5,
-      technician: 4,
-      executive: 3,
-      totalMembershipCards: 860,
-      status: 'Active'
-    },
-    {
-      pincode: '641002',
-      area: 'RS Puram & DB Road',
-      division: 'Coimbatore Central',
-      district: 'Coimbatore',
-      admin: 'Deepa Rajan',
-      customers: 1850,
-      vendors: 2,
-      orders: 6,
-      totalManagers: 1,
-      totalAgents: 5,
-      pendingKYC: 1,
-      totalBookings: 5,
-      totalJobApplied: 11,
-      deliveryPartner: 4,
-      technician: 4,
-      executive: 2,
-      totalMembershipCards: 690,
-      status: 'Active'
-    }
-  ];
+  const pincodes = [];
 
   const filteredPincodes = pincodes.filter(p => {
     if (divisionFilter && p.division.toLowerCase() !== divisionFilter.toLowerCase()) return false;
@@ -228,86 +107,94 @@ export function StatePincodeDetails() {
       </div>
 
       {/* 3-column grid identical to Division and District Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {displayPincodes.map((pin) => (
-          <div
-            key={pin.pincode}
-            className="admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4 rounded-2xl"
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-2">
-              <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shrink-0">
-                  <MapPin className="w-5 h-5" />
+      {displayPincodes.length === 0 ? (
+        <div className="p-12 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] rounded-2xl">
+          <MapPin className="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+          <p className="font-medium text-base text-slate-800 dark:text-slate-200">No pincodes found</p>
+          <p className="text-xs mt-1 text-slate-400">There are no operational pincodes configured for this view.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {displayPincodes.map((pin) => (
+            <div
+              key={pin.pincode}
+              className="admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4 rounded-2xl"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-2">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shrink-0">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-mono font-bold text-slate-900 dark:text-white text-sm sm:text-[15px] whitespace-nowrap truncate" title={`PIN: ${pin.pincode}`}>
+                      PIN: {pin.pincode}
+                    </h3>
+                    <span className="text-[11px] text-slate-500 font-mono whitespace-nowrap block truncate">
+                      {pin.area} • {pin.division}
+                    </span>
+                  </div>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="font-mono font-bold text-slate-900 dark:text-white text-sm sm:text-[15px] whitespace-nowrap truncate" title={`PIN: ${pin.pincode}`}>
-                    PIN: {pin.pincode}
-                  </h3>
-                  <span className="text-[11px] text-slate-500 font-mono whitespace-nowrap block truncate">
-                    {pin.area} • {pin.division}
-                  </span>
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900/50 shrink-0">
+                  {pin.status}
+                </span>
+              </div>
+
+              {/* 3 Grid Stat Counters */}
+              <div className="grid grid-cols-3 gap-3 py-2">
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Vendors</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{pin.vendors}</div>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Orders</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{pin.orders}</div>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Bookings</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{pin.totalBookings}</div>
                 </div>
               </div>
-              <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900/50 shrink-0">
-                {pin.status}
-              </span>
-            </div>
 
-            {/* 3 Grid Stat Counters */}
-            <div className="grid grid-cols-3 gap-3 py-2">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Vendors</div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{pin.vendors}</div>
+              {/* Structured Rows */}
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
+                  <span className="text-slate-500 dark:text-slate-400">Assigned Admin:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{pin.admin}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
+                  <span className="text-slate-500 dark:text-slate-400">Total Customers:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{pin.customers.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
+                  <span className="text-slate-500 dark:text-slate-400">Total Orders:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{pin.orders.toLocaleString()}</span>
+                </div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Orders</div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{pin.orders}</div>
-              </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Bookings</div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{pin.totalBookings}</div>
-              </div>
-            </div>
 
-            {/* Structured Rows */}
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
-                <span className="text-slate-500 dark:text-slate-400">Assigned Admin:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{pin.admin}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
-                <span className="text-slate-500 dark:text-slate-400">Total Customers:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{pin.customers.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
-                <span className="text-slate-500 dark:text-slate-400">Total Orders:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{pin.orders.toLocaleString()}</span>
+              {/* Action Buttons: View Vendors & View Details */}
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/state-admin/vendors?pincode=${encodeURIComponent(pin.pincode)}`)}
+                  className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-400 dark:hover:bg-blue-900/60 transition cursor-pointer whitespace-nowrap"
+                >
+                  <span className="whitespace-nowrap">View Vendors</span>
+                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPincode(pin)}
+                  className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-600 dark:hover:bg-blue-500 transition shadow-xs cursor-pointer whitespace-nowrap"
+                >
+                  <span className="whitespace-nowrap">View Details</span>
+                  <Eye className="w-3.5 h-3.5 shrink-0" />
+                </button>
               </div>
             </div>
-
-            {/* Action Buttons: View Vendors & View Details */}
-            <div className="pt-2 flex gap-2">
-              <button
-                type="button"
-                onClick={() => navigate(`/state-admin/vendors?pincode=${encodeURIComponent(pin.pincode)}`)}
-                className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-400 dark:hover:bg-blue-900/60 transition cursor-pointer whitespace-nowrap"
-              >
-                <span className="whitespace-nowrap">View Vendors</span>
-                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedPincode(pin)}
-                className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-600 dark:hover:bg-blue-500 transition shadow-xs cursor-pointer whitespace-nowrap"
-              >
-                <span className="whitespace-nowrap">View Details</span>
-                <Eye className="w-3.5 h-3.5 shrink-0" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Pincode Full Operational Details Modal */}
       <Modal

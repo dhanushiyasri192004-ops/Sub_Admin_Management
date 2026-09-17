@@ -14,63 +14,7 @@ import {
   User
 } from 'lucide-react';
 
-const INITIAL_PINCODE_QUERIES = [
-  {
-    id: 'QR-8001',
-    subject: 'Merchant POS Hardware Thermal Printer Paper Jam & Replacement',
-    category: 'Hardware Support',
-    priority: 'High',
-    raisedBy: 'Sri Krishna Electricals',
-    userRole: 'Merchant Partner',
-    pincode: '636001',
-    slaDate: '2026-09-12',
-    status: 'Pending'
-  },
-  {
-    id: 'QR-8002',
-    subject: 'Customer Membership Discount Application Query on Groceries',
-    category: 'Membership & Billing',
-    priority: 'Normal',
-    raisedBy: 'Babu Janardhan',
-    userRole: 'Retail Merchant',
-    pincode: '636001',
-    slaDate: '2026-09-11',
-    status: 'In Review'
-  },
-  {
-    id: 'QR-8003',
-    subject: 'Electric Delivery Bike Charging Dock Availability at Fort Hub',
-    category: 'Fleet Support',
-    priority: 'Medium',
-    raisedBy: 'K. Ramakrishnan',
-    userRole: 'Delivery Lead',
-    pincode: '636001',
-    slaDate: '2026-09-08',
-    status: 'Resolved'
-  },
-  {
-    id: 'QR-8004',
-    subject: 'Agent Daily Collection Cash Reconciliation Discrepancy',
-    category: 'Accounts & Commission',
-    priority: 'High',
-    raisedBy: 'Suresh Raina',
-    userRole: 'Pincode Agent',
-    pincode: '636001',
-    slaDate: '2026-09-10',
-    status: 'In Review'
-  },
-  {
-    id: 'QR-8005',
-    subject: 'App Technician GPS Tracking Sync Delay During Morning Slot',
-    category: 'App Support',
-    priority: 'Normal',
-    raisedBy: 'Local Operations Desk',
-    userRole: 'Field Support',
-    pincode: '636001',
-    slaDate: '2026-09-07',
-    status: 'Resolved'
-  }
-];
+const INITIAL_PINCODE_QUERIES = [];
 
 export function PincodeQueries() {
   const { user } = useAuth();

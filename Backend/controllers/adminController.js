@@ -72,18 +72,10 @@ function getDistricts(req, res) {
       districts = districts.filter(d => d.name === req.user.district);
     }
 
-    const adminMapping = {
-      'Salem': { name: 'Ananya Iyer', email: 'district_admin@admin.com' },
-      'Coimbatore': { name: 'Sundar Raman', email: 'cbe_admin@admin.com' },
-      'Pune': { name: 'Nitin Deshmukh', email: 'pune_admin@admin.com' }
-    };
-
     const enrichedDistricts = districts.map(d => {
       const assigned = db.admins.find(a => a.district === d.name && (a.role === 'District Admin' || a.role.includes('District')));
-      const fallback = adminMapping[d.name] || { name: `${d.name} Admin`, email: `${d.name.toLowerCase()}_admin@admin.com` };
-
-      const adminName = assigned ? assigned.name.replace(/\s*\(.*?\)\s*/g, '').trim() : fallback.name;
-      const adminEmail = assigned ? assigned.email : fallback.email;
+      const adminName = assigned ? assigned.name.replace(/\s*\(.*?\)\s*/g, '').trim() : 'Unassigned';
+      const adminEmail = assigned ? assigned.email : '-';
       const status = d.status || 'Active';
 
       return {
@@ -157,25 +149,14 @@ function getDivisions(req, res) {
     const stateObj = db.hierarchy.states.find(s => s.name === req.user.state);
     if (!stateObj) return res.json({ success: true, divisions: [] });
 
-    const adminMapping = {
-      'Salem North': { name: 'Karthik Subramanian', email: 'divisional_admin@admin.com' },
-      'Salem South': { name: 'Manoj Kumar', email: 'salem_south_admin@admin.com' },
-      'Coimbatore Central': { name: 'Praveen Chandran', email: 'cbe_central_admin@admin.com' },
-      'Coimbatore North': { name: 'Divya Bharathi', email: 'cbe_north_admin@admin.com' },
-      'Pune West': { name: 'Sameer Joshi', email: 'pune_west_admin@admin.com' },
-      'Pune East': { name: 'Neha Kulkarni', email: 'pune_east_admin@admin.com' }
-    };
-
     let divisions = [];
     stateObj.districts.forEach(d => {
       if (!req.user.district || d.name === req.user.district) {
         d.divisions.forEach(div => {
           if (!req.user.division || div.name === req.user.division) {
             const assigned = db.admins.find(a => a.division === div.name && (a.role === 'Divisional Admin' || a.role.includes('Divisional')));
-            const fallback = adminMapping[div.name] || { name: `${div.name} Admin`, email: `${div.name.toLowerCase().replace(/\s+/g, '_')}_admin@admin.com` };
-
-            const adminName = assigned ? assigned.name.replace(/\s*\(.*?\)\s*/g, '').trim() : fallback.name;
-            const adminEmail = assigned ? assigned.email : fallback.email;
+            const adminName = assigned ? assigned.name.replace(/\s*\(.*?\)\s*/g, '').trim() : 'Unassigned';
+            const adminEmail = assigned ? assigned.email : '-';
             const status = div.status || 'Active';
 
             divisions.push({

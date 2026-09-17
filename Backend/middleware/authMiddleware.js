@@ -1,4 +1,4 @@
-const { verifyToken } = require('../utils/jwt');
+const { verifyToken, JWT_SECRET } = require('../utils/jwt');
 const { db } = require('../config/db');
 
 function authMiddleware(req, res, next) {
@@ -9,14 +9,30 @@ function authMiddleware(req, res, next) {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = verifyToken(token);
+    let decoded;
+    try {
+      decoded = verifyToken(token);
+    } catch (err) {
+      // Also try fallback manager secret in case an old token from Manager is presented
+      const jwt = require('jsonwebtoken');
+      try {
+        decoded = jwt.verify(token, 'super_secret_agent_manager_jwt_key_2026');
+      } catch (innerErr) {
+        throw err;
+      }
+    }
 
-    // Attach user to req
+    // Attach decoded user token payload to request
     req.user = decoded;
+    req.userId = decoded.id || decoded._id;
+
     next();
   } catch (error) {
     return res.status(401).json({ success: false, message: 'Invalid or expired token', error: error.message });
   }
 }
+
+authMiddleware.authMiddleware = authMiddleware;
+authMiddleware.JWT_SECRET = JWT_SECRET;
 
 module.exports = authMiddleware;

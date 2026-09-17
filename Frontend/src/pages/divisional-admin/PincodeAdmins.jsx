@@ -7,28 +7,7 @@ export function DivisionalPincodeAdmins() {
   const { user } = useAuth();
   const divisionName = user?.division || 'Salem North';
 
-  const [admins] = useState([
-    {
-      id: 'ADM-PIN-636001',
-      name: 'Priya Narayanan',
-      email: 'pincode_admin@admin.com',
-      phone: '+91 98403 11223',
-      pincode: '636001',
-      area: 'Salem Fort / Town',
-      division: divisionName,
-      status: 'Active'
-    },
-    {
-      id: 'ADM-PIN-636002',
-      name: 'Suresh Raina',
-      email: 'pincode_admin_636002@admin.com',
-      phone: '+91 98403 44556',
-      pincode: '636002',
-      area: 'Shevapet / Bazaar',
-      division: divisionName,
-      status: 'Active'
-    }
-  ]);
+  const [admins] = useState([]);
 
   const columns = [
     {

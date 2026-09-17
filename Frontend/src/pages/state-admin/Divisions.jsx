@@ -25,113 +25,26 @@ export function StateDivisions() {
   const navigate = useNavigate();
 
   const getAdminDetails = (row) => {
-    const adminProfiles = {
-      'Salem North': {
-        id: 'ADM-DIV-01',
-        employeeCode: 'EMP-TN-DIV-001',
-        name: 'Karthik Subramanian',
-        email: 'divisional_admin@admin.com',
-        phone: '+91 98401 23456',
-        emergencyPhone: '+91 98401 23499',
-        division: 'Salem North',
-        code: 'DIV-SLM-N',
-        district: 'Salem',
-        state: 'Tamil Nadu',
-        pincodesCount: 2,
-        pincodes: ['636001', '636002'],
-        status: row.status || 'Active',
-        joinedDate: '15 Jan 2026',
-        qualification: 'Master of Public Administration (MPA), B.Sc (Computer Science)',
-        experience: '7+ years in Sub-Divisional Operations & Public Administration',
-        specialization: 'Zonal Urban Planning & Merchant Cluster Management',
-        address: 'Divisional Administrative Hub, 14 Fort Main Road, Salem North - 636001, Tamil Nadu'
-      },
-      'Salem South': {
-        id: 'ADM-DIV-02',
-        employeeCode: 'EMP-TN-DIV-002',
-        name: 'Manoj Kumar',
-        email: 'salem_south_admin@admin.com',
-        phone: '+91 98402 88991',
-        emergencyPhone: '+91 98402 88999',
-        division: 'Salem South',
-        code: 'DIV-SLM-S',
-        district: 'Salem',
-        state: 'Tamil Nadu',
-        pincodesCount: 2,
-        pincodes: ['636003', '636004'],
-        status: row.status || 'Active',
-        joinedDate: '20 Jan 2026',
-        qualification: 'MBA in Operations & Logistics, B.Com',
-        experience: '6+ years in Regional Operations & Merchant Onboarding',
-        specialization: 'Retail & Service Merchant Networks, Citizen Services',
-        address: 'South Division Zonal Office, 88 Gugai Bypass Road, Salem - 636004, Tamil Nadu'
-      },
-      'Coimbatore Central': {
-        id: 'ADM-DIV-03',
-        employeeCode: 'EMP-TN-DIV-003',
-        name: 'Praveen Chandran',
-        email: 'cbe_central_admin@admin.com',
-        phone: '+91 98402 44556',
-        emergencyPhone: '+91 98402 44599',
-        division: 'Coimbatore Central',
-        code: 'DIV-CBE-C',
-        district: 'Coimbatore',
-        state: 'Tamil Nadu',
-        pincodesCount: 2,
-        pincodes: ['641001', '641002'],
-        status: row.status || 'Active',
-        joinedDate: '18 Jan 2026',
-        qualification: 'M.Tech in Industrial Systems, B.E. (Mechanical)',
-        experience: '9+ years in Metropolitan Divisional Operations',
-        specialization: 'Commercial Hubs, High-Volume Logistics & Vendor Systems',
-        address: 'Central Division Zonal Center, 22 DB Road, RS Puram, Coimbatore - 641002, Tamil Nadu'
-      },
-      'Coimbatore North': {
-        id: 'ADM-DIV-04',
-        employeeCode: 'EMP-TN-DIV-004',
-        name: 'Divya Bharathi',
-        email: 'cbe_north_admin@admin.com',
-        phone: '+91 98402 77889',
-        emergencyPhone: '+91 98402 77899',
-        division: 'Coimbatore North',
-        code: 'DIV-CBE-N',
-        district: 'Coimbatore',
-        state: 'Tamil Nadu',
-        pincodesCount: 2,
-        pincodes: ['641003', '641004'],
-        status: row.status || 'Active',
-        joinedDate: '22 Jan 2026',
-        qualification: 'M.Sc in Information Systems, B.Sc Mathematics',
-        experience: '8+ years in Industrial Operations & Nodal Administration',
-        specialization: 'Tech Zone Management, Industrial & Service Franchises',
-        address: 'North Division Secretariat, 5 Tech Park Way, Peelamedu, Coimbatore - 641004, Tamil Nadu'
-      }
-    };
-
-    if (adminProfiles[row.name]) {
-      return { ...adminProfiles[row.name], status: row.status || 'Active' };
-    }
-
-    const adminName = row.adminName || `${row.name} Admin`;
+    const adminName = row.adminName || row.assignedAdmin || 'Unassigned';
     return {
-      id: `ADM-DIV-${row.id || '009'}`,
-      employeeCode: `EMP-TN-DIV-${row.id || '009'}`,
+      id: row.adminId || `ADM-DIV-${row.id || '001'}`,
+      employeeCode: row.employeeCode || '-',
       name: adminName,
-      email: row.adminEmail || `${row.name.toLowerCase().replace(/\s+/g, '_')}_admin@admin.com`,
-      phone: '+91 98401 99887',
-      emergencyPhone: '+91 98401 99899',
-      division: row.name,
-      code: row.id || `DIV-${row.name.slice(0, 3).toUpperCase()}`,
-      district: row.districtName || 'Assigned District',
-      state: 'Tamil Nadu',
-      pincodesCount: row.pincodes?.length || 0,
+      email: row.adminEmail || '-',
+      phone: row.adminPhone || '-',
+      emergencyPhone: '-',
+      division: row.name || row.divisionName || '-',
+      code: row.id || (row.name ? `DIV-${row.name.slice(0, 3).toUpperCase()}` : '-'),
+      district: row.districtName || row.district || '-',
+      state: row.state || 'Tamil Nadu',
+      pincodesCount: row.pincodes?.length || row.pincodesCount || 0,
       pincodes: row.pincodes || [],
       status: row.status || 'Active',
-      joinedDate: '15 Jan 2026',
-      qualification: 'MBA / Master of Public Administration',
-      experience: '6+ years in Divisional Public Administration',
-      specialization: 'Territory Supervision & Merchant Network Operations',
-      address: `Divisional Secretariat Office, Main Road, ${row.name}, Tamil Nadu`
+      joinedDate: row.joinedDate || '-',
+      qualification: row.qualification || '-',
+      experience: row.experience || '-',
+      specialization: row.specialization || '-',
+      address: row.address || `Divisional Office, ${row.name || ''}, ${row.districtName || ''}`
     };
   };
 

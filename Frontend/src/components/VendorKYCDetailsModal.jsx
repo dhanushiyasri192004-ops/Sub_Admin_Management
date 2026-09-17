@@ -210,7 +210,7 @@ export function VendorKYCDetailsModal({ isOpen, onClose, vendor, onVendorUpdated
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2">
-                  <span>Vendor ID: <strong className="font-mono text-slate-700 dark:text-slate-300">{vendor.id || 'KYC-VND-001'}</strong></span>
+                  <span>Vendor ID: <strong className="font-mono text-slate-700 dark:text-slate-300">{vendor.id || vendor.vendorId || '-'}</strong></span>
                   <span>•</span>
                   <span>Type: <strong className="text-slate-700 dark:text-slate-300">{businessType}</strong></span>
                 </div>
@@ -408,10 +408,10 @@ export function VendorKYCDetailsModal({ isOpen, onClose, vendor, onVendorUpdated
                   Pincode Admin
                 </span>
                 <span className="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block">
-                  {assignedTeam.pincodeAdmin?.name || 'Priya Narayanan'}
+                  {assignedTeam.pincodeAdmin?.name || 'Unassigned'}
                 </span>
                 <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 block">
-                  {assignedTeam.pincodeAdmin?.phone || '+91 94431 10001'}
+                  {assignedTeam.pincodeAdmin?.phone || '-'}
                 </span>
               </div>
               <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800">
@@ -419,10 +419,10 @@ export function VendorKYCDetailsModal({ isOpen, onClose, vendor, onVendorUpdated
                   Pincode Manager
                 </span>
                 <span className="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block">
-                  {assignedTeam.pincodeManager?.name || 'Saravanan Muthuraj'}
+                  {assignedTeam.pincodeManager?.name || 'Unassigned'}
                 </span>
                 <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 block">
-                  {assignedTeam.pincodeManager?.phone || '+91 98421 20002'}
+                  {assignedTeam.pincodeManager?.phone || '-'}
                 </span>
               </div>
               <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800">
@@ -430,10 +430,10 @@ export function VendorKYCDetailsModal({ isOpen, onClose, vendor, onVendorUpdated
                   Pincode Agent
                 </span>
                 <span className="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block">
-                  {assignedTeam.pincodeAgent?.name || 'Naveen Kumar M'}
+                  {assignedTeam.pincodeAgent?.name || 'Unassigned'}
                 </span>
                 <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 block">
-                  {assignedTeam.pincodeAgent?.phone || '+91 98940 55103'}
+                  {assignedTeam.pincodeAgent?.phone || '-'}
                 </span>
               </div>
             </div>

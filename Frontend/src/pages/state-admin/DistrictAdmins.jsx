@@ -24,46 +24,7 @@ export function StateDistrictAdmins() {
   const { isDark } = useTheme();
   const [selectedAdmin, setSelectedAdmin] = useState(null);
 
-  const [admins] = useState([
-    {
-      id: 'ADM-DST-01',
-      employeeCode: 'EMP-TN-DST-004',
-      name: 'Rajesh Sharma',
-      email: 'district_admin@admin.com',
-      phone: '+91 98765 43211',
-      emergencyPhone: '+91 98765 43299',
-      district: 'Salem',
-      code: 'SLM',
-      state: 'Tamil Nadu',
-      divisionsCount: 2,
-      pincodesCount: 4,
-      status: 'Active',
-      joinedDate: '10 Jan 2026',
-      qualification: 'Master of Public Administration (MPA), B.Tech (IT)',
-      experience: '8+ years in Territorial Public Governance & Ops',
-      specialization: 'District Logistics & Municipal Governance',
-      address: 'Collectorate Administrative Complex, 42 Meyyanur Main Road, Salem - 636004, Tamil Nadu'
-    },
-    {
-      id: 'ADM-DST-02',
-      employeeCode: 'EMP-TN-DST-008',
-      name: 'Sundar Raman',
-      email: 'cbe_admin@admin.com',
-      phone: '+91 98402 11223',
-      emergencyPhone: '+91 98402 11299',
-      district: 'Coimbatore',
-      code: 'CBE',
-      state: 'Tamil Nadu',
-      divisionsCount: 2,
-      pincodesCount: 4,
-      status: 'Active',
-      joinedDate: '12 Jan 2026',
-      qualification: 'MBA in Operations & Logistics, B.E. (Computer Science)',
-      experience: '10+ years in Zonal Logistics & District Administration',
-      specialization: 'Smart City Infrastructure & Last-Mile Field Ops',
-      address: 'District Collectorate Office, 15 Avinashi Road, Peelamedu, Coimbatore - 641004, Tamil Nadu'
-    }
-  ]);
+  const [admins] = useState([]);
 
   const columns = [
     {

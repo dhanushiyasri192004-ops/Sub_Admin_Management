@@ -130,7 +130,7 @@ export function RegisterVendorModal({ isOpen, onClose, onVendorCreated, initialP
                 type="text"
                 name="name"
                 required
-                placeholder="e.g. Sri Murugan Provisions"
+                placeholder="e.g. Fresh Grocers"
                 value={formData.name}
                 onChange={handleChange}
                 className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
@@ -148,7 +148,7 @@ export function RegisterVendorModal({ isOpen, onClose, onVendorCreated, initialP
                 type="text"
                 name="contactPerson"
                 required
-                placeholder="e.g. Muruganandam S"
+                placeholder="e.g. Contact Person Name"
                 value={formData.contactPerson}
                 onChange={handleChange}
                 className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden"

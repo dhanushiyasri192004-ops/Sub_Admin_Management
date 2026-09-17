@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+import { dataService } from '../../services/dataService';
 import {
   MapPin,
   ShieldCheck,
@@ -30,25 +31,43 @@ export function DivisionalAdminDashboard() {
   const divisionName = user?.division || 'Salem North';
   const districtName = user?.district || 'Salem';
 
-  // Stats for this division (10 key metrics matching the exact model)
+  const [summaryData, setSummaryData] = useState(null);
+  const [pincodes, setPincodes] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    Promise.all([
+      dataService.getDashboardSummary().catch(() => null),
+      dataService.getPincodes().catch(() => null)
+    ]).then(([summary, pinRes]) => {
+      if (!isMounted) return;
+      if (summary?.success) setSummaryData(summary);
+      if (pinRes?.pincodes) setPincodes(pinRes.pincodes);
+    });
+    return () => { isMounted = false; };
+  }, []);
+
+  const metrics = summaryData?.metrics || {};
   const stats = {
-    totalPincodes: 2,
-    totalPincodeAdmins: 2,
-    totalCustomers: 4,
-    totalVendors: 3,
-    totalOrders: 4,
-    totalBookings: 2,
-    totalJobs: 2,
-    totalTechnicians: 2,
-    totalAgents: 2,
-    pendingPayments: 1
+    totalPincodes: pincodes.length || metrics.totalPincodes || 0,
+    totalPincodeAdmins: metrics.totalPincodeAdmins || 0,
+    totalCustomers: metrics.totalCustomers || 0,
+    totalVendors: metrics.totalVendors || 0,
+    totalOrders: metrics.totalOrders || 0,
+    totalBookings: metrics.totalBookings || 0,
+    totalJobs: metrics.totalJobs || 0,
+    totalTechnicians: metrics.totalTechnicians || 0,
+    totalAgents: metrics.totalAgents || 0,
+    pendingPayments: (metrics.pendingAgentPayouts || 0) + (metrics.pendingVendorPayouts || 0) > 0 ? 1 : 0
   };
 
   const donutData = [
-    { name: 'Silver Tier', value: 1, color: '#94a3b8' },
-    { name: 'Gold Tier', value: 1, color: '#f59e0b' },
-    { name: 'Diamond Tier', value: 1, color: '#0ea5e9' }
+    { name: 'Silver Tier', value: summaryData?.membershipDistribution?.Silver || 0, color: '#94a3b8' },
+    { name: 'Gold Tier', value: summaryData?.membershipDistribution?.Gold || 0, color: '#f59e0b' },
+    { name: 'Diamond Tier', value: summaryData?.membershipDistribution?.Diamond || 0, color: '#0ea5e9' }
   ];
+  const totalCards = (summaryData?.membershipDistribution?.Silver || 0) + (summaryData?.membershipDistribution?.Gold || 0) + (summaryData?.membershipDistribution?.Diamond || 0);
+
 
   return (
     <div className="space-y-6 pb-8">
@@ -70,7 +89,7 @@ export function DivisionalAdminDashboard() {
             </div>
           </div>
           <div className={`text-xl font-black ${isDark ? 'text-white' : 'text-slate-900'} mt-2`}>{stats.totalPincodes}</div>
-          <div className="text-[10px] text-indigo-600 font-semibold mt-0.5">636001, 636002</div>
+          <div className="text-[10px] text-indigo-600 font-semibold mt-0.5">{stats.totalPincodes > 0 ? `${stats.totalPincodes} Active Zones` : 'Assigned Zones'}</div>
         </div>
 
         {/* 2. Pincode Admins */}
@@ -265,47 +284,36 @@ export function DivisionalAdminDashboard() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div
-              onClick={() => navigate('/divisional-admin/customers?pincode=636001')}
-              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">636001 - Salem Town Fort</h4>
-                  <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                    PIN-636001
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 mt-1">Officer: Priya Narayanan &bull; 1,420 Active Users</p>
-              </div>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">Customers: 2</span>
-                <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold">Orders: 2</span>
-                <span className="px-2 py-0.5 rounded bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-mono text-xs font-semibold">Vendors: 2</span>
-              </div>
+          {pincodes.length === 0 ? (
+            <div className="p-8 text-center text-slate-400 text-xs">
+              No supervised pincodes found
             </div>
-
-            <div
-              onClick={() => navigate('/divisional-admin/customers?pincode=636002')}
-              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">636002 - Shevapet / Bazaar</h4>
-                  <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                    PIN-636002
-                  </span>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {pincodes.map(pin => (
+                <div
+                  key={pin.pincode}
+                  onClick={() => navigate(`/divisional-admin/customers?pincode=${pin.pincode}`)}
+                  className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-slate-900 dark:text-white text-sm">{pin.pincode} - {pin.areaName || pin.name || 'Zone'}</h4>
+                      <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
+                        PIN-{pin.pincode}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">Officer: {pin.adminName || 'Unassigned'} &bull; {pin.activeUsers || 0} Active Users</p>
+                  </div>
+                  <div className="flex items-center gap-2 mt-3 flex-wrap">
+                    <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">Customers: {pin.customerCount || 0}</span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold">Orders: {pin.orderCount || 0}</span>
+                    <span className="px-2 py-0.5 rounded bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-mono text-xs font-semibold">Vendors: {pin.vendorCount || 0}</span>
+                  </div>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Officer: Suresh Raina &bull; 1,120 Active Users</p>
-              </div>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">Customers: 2</span>
-                <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold">Orders: 2</span>
-                <span className="px-2 py-0.5 rounded bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-mono text-xs font-semibold">Vendors: 1</span>
-              </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
 
         {/* Membership Cards Donut */}
@@ -334,7 +342,7 @@ export function DivisionalAdminDashboard() {
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-              <span className="text-base font-black text-slate-900 dark:text-white">3</span>
+              <span className="text-base font-black text-slate-900 dark:text-white">{totalCards}</span>
               <span className="text-[9px] text-slate-500 font-semibold uppercase">Cards</span>
             </div>
           </div>
@@ -342,15 +350,15 @@ export function DivisionalAdminDashboard() {
           <div className="space-y-1.5 text-xs">
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-slate-400"></span>Silver</span>
-              <span className="font-bold text-slate-900 dark:text-white">1</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summaryData?.membershipDistribution?.Silver || 0}</span>
             </div>
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-400"></span>Gold</span>
-              <span className="font-bold text-slate-900 dark:text-white">1</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summaryData?.membershipDistribution?.Gold || 0}</span>
             </div>
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyan-400"></span>Diamond</span>
-              <span className="font-bold text-slate-900 dark:text-white">1</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summaryData?.membershipDistribution?.Diamond || 0}</span>
             </div>
           </div>
         </div>

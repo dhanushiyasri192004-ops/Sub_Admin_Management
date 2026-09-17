@@ -21,7 +21,7 @@ export function DivisionalProfile() {
           />
           <div className="flex-1 text-center sm:text-left space-y-1">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{user?.name || 'Karthik Subramanian'}</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{user?.name || 'Divisional Admin'}</h3>
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 dark:bg-purple-950/80 text-blue-700 dark:text-purple-300 border border-blue-200 dark:border-purple-500/40 w-fit mx-auto sm:mx-0">
                 {user?.role || 'Divisional Admin'}
               </span>

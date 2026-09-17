@@ -32,128 +32,7 @@ export function DistrictPincodeDetails() {
 
   const district = user?.district || 'Salem';
 
-  const pincodes = [
-    {
-      pincode: '636001',
-      area: 'Salem Town Fort',
-      division: 'Salem North',
-      district: 'Salem',
-      admin: 'Priya Narayanan',
-      customers: 1420,
-      vendors: 2,
-      orders: 6,
-      totalManagers: 1,
-      totalAgents: 5,
-      pendingKYC: 1,
-      totalBookings: 4,
-      totalJobApplied: 8,
-      deliveryPartner: 3,
-      technician: 2,
-      executive: 2,
-      totalMembershipCards: 480,
-      status: 'Active'
-    },
-    {
-      pincode: '636002',
-      area: 'Shevapet & Market',
-      division: 'Salem North',
-      district: 'Salem',
-      admin: 'Suresh Raina',
-      customers: 980,
-      vendors: 2,
-      orders: 4,
-      totalManagers: 1,
-      totalAgents: 3,
-      pendingKYC: 1,
-      totalBookings: 2,
-      totalJobApplied: 7,
-      deliveryPartner: 2,
-      technician: 2,
-      executive: 1,
-      totalMembershipCards: 340,
-      status: 'Active'
-    },
-    {
-      pincode: '636003',
-      area: 'Ammapet Colony',
-      division: 'Salem South',
-      district: 'Salem',
-      admin: 'Venkatesh Babu',
-      customers: 1150,
-      vendors: 1,
-      orders: 5,
-      totalManagers: 1,
-      totalAgents: 4,
-      pendingKYC: 1,
-      totalBookings: 3,
-      totalJobApplied: 8,
-      deliveryPartner: 2,
-      technician: 2,
-      executive: 1,
-      totalMembershipCards: 360,
-      status: 'Active'
-    },
-    {
-      pincode: '636004',
-      area: 'Gugai Industrial Area',
-      division: 'Salem South',
-      district: 'Salem',
-      admin: 'Meena Kumari',
-      customers: 720,
-      vendors: 1,
-      orders: 3,
-      totalManagers: 1,
-      totalAgents: 2,
-      pendingKYC: 0,
-      totalBookings: 3,
-      totalJobApplied: 5,
-      deliveryPartner: 2,
-      technician: 2,
-      executive: 1,
-      totalMembershipCards: 240,
-      status: 'Active'
-    },
-    {
-      pincode: '641001',
-      area: 'Town Hall & Big Bazaar',
-      division: 'Coimbatore Central',
-      district: 'Coimbatore',
-      admin: 'Arun Kumar',
-      customers: 2300,
-      vendors: 3,
-      orders: 8,
-      totalManagers: 2,
-      totalAgents: 7,
-      pendingKYC: 2,
-      totalBookings: 6,
-      totalJobApplied: 14,
-      deliveryPartner: 5,
-      technician: 4,
-      executive: 3,
-      totalMembershipCards: 860,
-      status: 'Active'
-    },
-    {
-      pincode: '641002',
-      area: 'RS Puram & DB Road',
-      division: 'Coimbatore Central',
-      district: 'Coimbatore',
-      admin: 'Deepa Rajan',
-      customers: 1850,
-      vendors: 2,
-      orders: 6,
-      totalManagers: 1,
-      totalAgents: 5,
-      pendingKYC: 1,
-      totalBookings: 5,
-      totalJobApplied: 11,
-      deliveryPartner: 4,
-      technician: 4,
-      executive: 2,
-      totalMembershipCards: 690,
-      status: 'Active'
-    }
-  ];
+  const pincodes = [];
 
   // Filter by District and optionally by Division
   const districtPincodes = pincodes.filter(p => 
@@ -178,24 +57,46 @@ export function DistrictPincodeDetails() {
     { label: 'Total Orders', value: pin.orders, icon: Package, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50' },
     { label: 'Total Bookings', value: pin.totalBookings, icon: CalendarCheck, color: 'text-cyan-600 bg-cyan-50 dark:bg-cyan-950/60 dark:text-cyan-400 border-cyan-100 dark:border-cyan-900/50' },
     { label: 'Total Job Applied', value: pin.totalJobApplied, icon: Briefcase, color: 'text-sky-600 bg-sky-50 dark:bg-sky-950/60 dark:text-sky-400 border-sky-100 dark:border-sky-900/50' },
-    { label: 'Total Membership Cards', value: pin.totalMembershipCards?.toLocaleString(), icon: CreditCard, color: 'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/50' }
+    { label: 'Total Membership Cards', value: pin.totalMembershipCards, icon: CreditCard, color: 'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/50' }
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">District Pincode Micro-Zone Details</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Hyperlocal granular breakdown and operational activity across all assigned pincodes in {district} District.
-          </p>
+    <div className="space-y-6 pb-8">
+      {/* Top Header Card identical to Division Details / District Details */}
+      <div className="admin-card p-6 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4 rounded-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-2xl bg-blue-600 text-white shadow-xs">
+              <MapPin className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
+                Pincode Level Operational Directory
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Comprehensive 11-Parameter Operational Grid for {district} District Pincodes
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => navigate('/district-admin/pincodes')}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 transition cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Pincodes</span>
+            </button>
+          </div>
         </div>
 
+        {/* Division Filter Badge if active */}
         {divisionFilter && (
-          <div className="flex items-center gap-2 self-start sm:self-auto">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-900/50">
-              <Building2 className="w-3.5 h-3.5" />
-              <span>Division: {divisionFilter}</span>
+          <div className="pt-2 flex items-center gap-2">
+            <span className="text-xs text-slate-500">Filtered by Division:</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800">
+              <span>{divisionFilter}</span>
               <button
                 type="button"
                 onClick={() => navigate('/district-admin/pincode-details')}
@@ -210,7 +111,14 @@ export function DistrictPincodeDetails() {
       </div>
 
       {/* 3-column grid identical to Division and District Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {filteredPincodes.length === 0 ? (
+        <div className="p-12 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] rounded-2xl">
+          <MapPin className="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+          <p className="font-medium text-base text-slate-800 dark:text-slate-200">No pincodes found</p>
+          <p className="text-xs mt-1 text-slate-400">There are no operational pincodes configured for this view.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredPincodes.map((pin) => (
           <div
             key={pin.pincode}
@@ -290,6 +198,7 @@ export function DistrictPincodeDetails() {
           </div>
         ))}
       </div>
+    )}
 
       {/* Pincode Full Operational Details Modal */}
       <Modal

@@ -1,77 +1,212 @@
 const { db, filterByLocation } = require('../config/db');
-const { resolvePincodeHierarchy, PINCODE_MAP } = require('../utils/pincodeMapping');
+const { resolvePincodeHierarchy } = require('../utils/pincodeMapping');
+const { getScopeFilter, isVendorInScope } = require('../middleware/scopeMiddleware');
 
+// Mask sensitive identifiers for public / lower view
+const maskPan = (pan) => {
+  if (!pan || pan.length < 5) return pan;
+  return 'XXXXX' + pan.slice(5);
+};
+
+const maskAccount = (acc) => {
+  if (!acc || acc.length < 4) return acc;
+  const visible = acc.slice(-4);
+  return '••••'.repeat(Math.max(0, Math.floor((acc.length - 4) / 4))) + visible;
+};
+
+const maskGst = (gst) => {
+  if (!gst || gst.length < 6) return gst;
+  const stateCode = gst.slice(0, 2);
+  const endCode = gst.slice(-3);
+  return `${stateCode}••••••••••${endCode}`;
+};
+
+// Helper: Ensure vendor has addedBy info
 function ensureVendorAddedBy(v) {
   if (v.addedBy && v.addedBy.name) return v;
-  const idStr = String(v.id || '');
-  let creator;
-  if (idStr.endsWith('1')) {
-    creator = { id: 'ADM-001', name: 'Rajesh Sharma', role: 'State Admin', phone: '+91 98765 43210', email: 'state_admin@admin.com', addedAt: '2026-02-10' };
-  } else if (idStr.endsWith('2')) {
-    creator = { id: 'MGR-PIN-01', name: 'Saravanan Muthuraj', role: 'Pincode Manager', phone: '+91 98409 66001', email: 'saravanan.636001@forgeindia.in', addedAt: '2026-02-15' };
-  } else if (idStr.endsWith('3')) {
-    creator = { id: 'AGT-PIN-01', name: 'Naveen Kumar M', role: 'Pincode Agent', phone: '+91 98940 55103', email: 'naveen.agent@gmail.com', addedAt: '2026-02-20' };
-  } else {
-    creator = { id: 'ADM-002', name: 'Ananya Iyer', role: 'District Admin', phone: '+91 98765 43211', email: 'district_admin@admin.com', addedAt: '2026-02-24' };
-  }
-  v.addedBy = creator;
+  v.addedBy = v.addedBy || null;
   return v;
 }
 
-function getVendors(req, res) {
+// Populate location names and IDs
+const populateVendorLocations = async (vendor) => {
+  const [state, district, division, pincode] = await Promise.all([
+    vendor.stateId ? db.states.findById(vendor.stateId) : (vendor.state ? db.states.findOne({ name: vendor.state }) : null),
+    vendor.districtId ? db.districts.findById(vendor.districtId) : (vendor.district ? db.districts.findOne({ name: vendor.district }) : null),
+    vendor.divisionId ? db.divisions.findById(vendor.divisionId) : (vendor.division ? db.divisions.findOne({ name: vendor.division }) : null),
+    vendor.pincodeId ? db.pincodes.findById(vendor.pincodeId) : (vendor.pincode ? db.pincodes.findOne({ code: vendor.pincode }) : null)
+  ]);
+
+  const stateName = vendor.state || state?.name || '';
+  const districtName = vendor.district || district?.name || '';
+  const divisionName = vendor.division || division?.name || '';
+  const pincodeCode = vendor.pincode || pincode?.code || '';
+  const pincodeArea = pincode?.areaName || vendor.address || '';
+
+  const normalized = {
+    ...vendor,
+    id: vendor._id || vendor.id,
+    _id: vendor._id || vendor.id,
+    name: vendor.businessName || vendor.name,
+    businessName: vendor.businessName || vendor.name,
+    contactPerson: vendor.contactPerson || vendor.name,
+    phone: vendor.phone || vendor.mobile,
+    mobile: vendor.mobile || vendor.phone,
+    email: vendor.email || '',
+    category: vendor.category || 'Services',
+    subCategory: vendor.subCategory || 'General',
+    state: stateName,
+    stateName,
+    district: districtName,
+    districtName,
+    division: divisionName,
+    divisionName,
+    pincode: pincodeCode,
+    pincodeCode,
+    pincodeArea,
+    stateId: vendor.stateId || (state ? state._id : null),
+    districtId: vendor.districtId || (district ? district._id : null),
+    divisionId: vendor.divisionId || (division ? division._id : null),
+    pincodeId: vendor.pincodeId || (pincode ? pincode._id : null),
+    status: vendor.status || 'Active',
+    kycStatus: vendor.kycStatus || (vendor.status === 'Active' ? 'Verified' : 'Pending Verification'),
+    approvalStatus: vendor.approvalStatus || (vendor.status === 'Active' ? 'Approved' : 'Pending')
+  };
+
+  ensureVendorAddedBy(normalized);
+  return normalized;
+};
+
+// GET /api/vendors - Paginated, filtered, strictly scope-enforced
+const getVendors = async (req, res) => {
   try {
-    let scoped = filterByLocation(db.vendors, req.user);
+    const user = req.user;
+    const allVendors = Array.from(db.vendors);
 
-    const { search, category, status, kycStatus } = req.query;
-    if (search) {
-      const q = search.toLowerCase();
-      scoped = scoped.filter(v =>
-        v.name.toLowerCase().includes(q) ||
-        (v.contactPerson && v.contactPerson.toLowerCase().includes(q)) ||
-        (v.category && v.category.toLowerCase().includes(q)) ||
-        (v.pincode && v.pincode.includes(q)) ||
-        (v.district && v.district.toLowerCase().includes(q)) ||
-        (v.division && v.division.toLowerCase().includes(q))
-      );
-    }
-    if (category) {
-      scoped = scoped.filter(v => (v.category || '').toLowerCase() === category.toLowerCase());
-    }
-    if (status) {
-      scoped = scoped.filter(v => (v.status || '').toLowerCase() === status.toLowerCase());
-    }
-    if (kycStatus) {
-      scoped = scoped.filter(v => (v.kycStatus || '').toLowerCase() === kycStatus.toLowerCase());
+    // Apply location filtering matching caller's scope
+    let scoped = filterByLocation(allVendors, user);
+
+    // Extract query parameters
+    const {
+      search,
+      category,
+      subCategory,
+      status,
+      kycStatus,
+      districtId,
+      divisionId,
+      pincodeId,
+      page,
+      limit,
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = req.query;
+
+    let filtered = scoped.filter(v => {
+      // 1. Search filter
+      if (search && search.trim()) {
+        const q = search.trim().toLowerCase();
+        const matchesName = (v.name || '').toLowerCase().includes(q);
+        const matchesBiz = (v.businessName || '').toLowerCase().includes(q);
+        const matchesContact = (v.contactPerson || '').toLowerCase().includes(q);
+        const matchesMobile = (v.mobile || v.phone || '').includes(q);
+        const matchesPin = (v.pincode || '').includes(q);
+        const matchesCat = (v.category || '').toLowerCase().includes(q);
+        const matchesDist = (v.district || '').toLowerCase().includes(q);
+        const matchesDiv = (v.division || '').toLowerCase().includes(q);
+
+        if (!matchesName && !matchesBiz && !matchesContact && !matchesMobile && !matchesPin && !matchesCat && !matchesDist && !matchesDiv) {
+          return false;
+        }
+      }
+
+      // 2. Category & Subcategory
+      if (category && category !== 'All' && (v.category || '').toLowerCase() !== category.toLowerCase()) return false;
+      if (subCategory && subCategory !== 'All' && (v.subCategory || '').toLowerCase() !== subCategory.toLowerCase()) return false;
+
+      // 3. Status filter
+      if (status && status !== 'All' && (v.status || '').toLowerCase() !== status.toLowerCase()) return false;
+      if (kycStatus && kycStatus !== 'All' && (v.kycStatus || '').toLowerCase() !== kycStatus.toLowerCase()) return false;
+
+      // 4. Sub-location filters
+      if (districtId && v.districtId !== districtId) return false;
+      if (divisionId && v.divisionId !== divisionId) return false;
+      if (pincodeId && v.pincodeId !== pincodeId) return false;
+
+      return true;
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      const fieldA = a[sortBy] || '';
+      const fieldB = b[sortBy] || '';
+      if (sortOrder === 'asc') return fieldA > fieldB ? 1 : -1;
+      return fieldA < fieldB ? 1 : -1;
+    });
+
+    const totalVendors = filtered.length;
+    let pagedVendors = filtered;
+    let currentPage = 1;
+    let pageSize = totalVendors;
+
+    // Apply pagination if explicitly provided by Manager portal
+    if (page || limit) {
+      currentPage = parseInt(page, 10) || 1;
+      pageSize = parseInt(limit, 10) || 10;
+      const startIndex = (currentPage - 1) * pageSize;
+      pagedVendors = filtered.slice(startIndex, startIndex + pageSize);
     }
 
-    scoped.forEach(ensureVendorAddedBy);
+    const totalPages = Math.ceil(totalVendors / (pageSize || 1)) || 1;
 
-    return res.json({ success: true, count: scoped.length, vendors: scoped });
+    // Populate vendors
+    const populated = await Promise.all(pagedVendors.map(populateVendorLocations));
+
+    return res.json({
+      success: true,
+      count: totalVendors,
+      total: totalVendors,
+      vendors: populated,   // Sub_Admin_Management portal expects `vendors`
+      data: populated,      // Manager portal expects `data`
+      pagination: {
+        total: totalVendors,
+        page: currentPage,
+        limit: pageSize,
+        totalPages
+      }
+    });
   } catch (error) {
+    console.error('Failed to fetch vendors:', error);
     return res.status(500).json({ success: false, message: 'Failed to fetch vendors', error: error.message });
   }
-}
+};
 
-function getVendorById(req, res) {
+const getVendorById = async (req, res) => {
   try {
-    const vendor = db.vendors.find(v => v.id === req.params.id);
+    const { id } = req.params;
+    const vendor = await db.vendors.findById(id);
     if (!vendor) {
       return res.status(404).json({ success: false, message: 'Vendor not found' });
     }
 
-    const scoped = filterByLocation([vendor], req.user);
-    if (scoped.length === 0) {
+    if (!isVendorInScope(vendor, req.user)) {
       return res.status(403).json({ success: false, message: 'Vendor outside your jurisdiction' });
     }
 
-    ensureVendorAddedBy(vendor);
-    return res.json({ success: true, vendor });
+    const populated = await populateVendorLocations(vendor);
+
+    return res.json({
+      success: true,
+      vendor: populated,
+      data: populated
+    });
   } catch (error) {
+    console.error('Failed to fetch vendor:', error);
     return res.status(500).json({ success: false, message: 'Failed to fetch vendor', error: error.message });
   }
-}
+};
 
-function lookupPincode(req, res) {
+const lookupPincode = (req, res) => {
   try {
     const { pincode } = req.params;
     const hierarchy = resolvePincodeHierarchy(pincode);
@@ -79,131 +214,244 @@ function lookupPincode(req, res) {
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Failed to lookup pincode', error: error.message });
   }
-}
+};
 
-function createVendor(req, res) {
+const createVendor = async (req, res) => {
   try {
     const data = req.body;
-    if (!data.name || !data.phone || !data.pincode) {
-      return res.status(400).json({ success: false, message: 'Business Name, Phone and Pincode are required' });
+    const name = data.businessName || data.name;
+    const phone = data.mobile || data.phone;
+    const pincode = data.pincode || data.pincodeCode;
+
+    if (!name || !phone) {
+      return res.status(400).json({ success: false, message: 'Business Name and Phone number are required' });
     }
 
-    // Automatically resolve location hierarchy and assigned team based on Pincode
-    const resolved = resolvePincodeHierarchy(data.pincode);
+    // Resolve hierarchy either from pincode lookup or given IDs
+    let state = data.state;
+    let district = data.district;
+    let division = data.division;
+    let resolvedPincode = pincode;
+    let stateId = data.stateId;
+    let districtId = data.districtId;
+    let divisionId = data.divisionId;
+    let pincodeId = data.pincodeId;
+
+    if (pincodeId && !pincode) {
+      const pinObj = await db.pincodes.findById(pincodeId);
+      if (pinObj) {
+        resolvedPincode = pinObj.code;
+        stateId = pinObj.stateId || stateId;
+        districtId = pinObj.districtId || districtId;
+        divisionId = pinObj.divisionId || divisionId;
+      }
+    }
+
+    if (resolvedPincode && (!state || !district || !division)) {
+      const resolved = resolvePincodeHierarchy(resolvedPincode);
+      state = state || resolved.state;
+      district = district || resolved.district;
+      division = division || resolved.division;
+      if (state === 'Tamil Nadu') stateId = stateId || 'state_tn';
+      if (district === 'Salem') districtId = districtId || 'dist_salem';
+      if (division === 'Salem North') divisionId = divisionId || 'div_dist_salem_urban';
+    }
+
+    const newId = `ven_${Date.now().toString().slice(-6)}`;
 
     const newVendor = {
-      id: `VND-${String(db.vendors.length + 1).padStart(3, '0')}`,
-      name: data.name,
-      contactPerson: data.contactPerson || data.name,
-      phone: data.phone,
-      email: data.email || `${data.name.toLowerCase().replace(/[^a-z0-9]/g, '')}@vendor.com`,
+      _id: newId,
+      id: newId,
+      name,
+      businessName: name,
+      contactPerson: data.contactPerson || name,
+      phone,
+      mobile: phone,
+      email: data.email || `${name.toLowerCase().replace(/[^a-z0-9]/g, '')}@vendor.com`,
       category: data.category || 'Services',
-      
-      // Automatic location hierarchy
-      state: resolved.state,
-      district: resolved.district,
-      division: resolved.division,
-      pincode: resolved.pincode,
-      address: data.address || `${resolved.areaName}, ${resolved.division}, PIN: ${resolved.pincode}`,
-      
-      // Automatic Assigned Team (Pincode Admin, Pincode Manager, Pincode Agent)
-      assignedTeam: {
-        pincodeAdmin: resolved.pincodeAdmin,
-        pincodeManager: resolved.pincodeManager,
-        pincodeAgent: resolved.pincodeAgent
-      },
-      // Backward compatibility for existing agent displays
-      assignedAgent: resolved.pincodeAgent,
-
-      // Two-Stage Approval Tracking
+      subCategory: data.subCategory || 'General',
+      description: data.description || data.address || '',
+      address: data.address || `${district}, ${state} - ${resolvedPincode}`,
+      state,
+      district,
+      division,
+      pincode: resolvedPincode,
+      stateId: stateId || null,
+      districtId: districtId || null,
+      divisionId: divisionId || null,
+      pincodeId: pincodeId || null,
+      regionId: stateId || null,
+      panNumber: data.panNumber || 'ABCDE1234F',
+      gstNumber: data.gstNumber || '33ABCDE1234F1Z5',
+      accountHolderName: data.accountHolderName || name,
+      accountNumber: data.accountNumber || '50200012345678',
+      ifsc: data.ifsc || 'HDFC0001234',
+      bankName: data.bankName || 'HDFC Bank',
+      status: 'Under Review',
       approvalStatus: 'Pending Pincode Admin Approval',
-      kycStatus: 'Pending Pincode Admin Approval',
-      status: 'Pending Verification',
-
-      pincodeAdminApproval: {
-        status: 'Pending',
-        decidedBy: null,
-        decidedAt: null,
-        rejectionReason: null
-      },
-      kycTeamApproval: {
-        status: 'Pending',
-        decidedBy: null,
-        decidedAt: null,
-        rejectionReason: null
-      },
-
+      kycStatus: 'Pending Verification',
       rating: 5.0,
       totalOrdersDelivered: 0,
       pendingPayout: 0,
-      createdAt: new Date().toISOString(),
+      createdBy: req.user?.id || req.user?._id || 'user_pin_mgr1',
       addedBy: {
-        id: req.user?.id || 'USR-001',
-        name: req.user?.name || (req.user?.role || 'State Admin'),
-        role: req.user?.role || 'State Admin',
-        phone: req.user?.phone || '+91 98765 43210',
-        email: req.user?.email || 'admin@forgeindia.in',
+        id: req.user?.id || req.user?._id || 'USR-001',
+        name: req.user?.name || req.user?.role || 'Field Manager',
+        role: req.user?.role || 'Field Manager',
+        phone: req.user?.phone || req.user?.mobile || '+91 98765 43210',
+        email: req.user?.email || 'manager@forgeindia.in',
         addedAt: new Date().toISOString().split('T')[0]
-      }
+      },
+      documents: data.documents || {},
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
-    db.vendors.unshift(newVendor);
+    const saved = await db.vendors.insertOne(newVendor);
 
-    // Also register in KYC records
+    // Audit log
+    await db.auditLogs.insertOne({
+      action: 'VENDOR_CREATED',
+      recordId: saved._id,
+      userId: req.user?.id || req.user?._id,
+      userName: req.user?.name || 'User',
+      userRole: req.user?.role || 'Manager',
+      details: `Vendor '${newVendor.businessName}' onboarded. Category: ${newVendor.category}. Assigned Pincode: ${newVendor.pincode}.`,
+      ip: req.ip || '127.0.0.1'
+    });
+
+    // Add to KYC records for Sub-Admin compliance queue
     if (db.kycRecords) {
       db.kycRecords.unshift({
-        id: `KYC-${newVendor.id}`,
-        vendorId: newVendor.id,
-        businessName: newVendor.name,
-        name: newVendor.name,
-        vendorName: newVendor.contactPerson,
-        phone: newVendor.phone,
-        email: newVendor.email,
-        category: newVendor.category,
-        address: newVendor.address,
-        state: newVendor.state,
-        district: newVendor.district,
-        division: newVendor.division,
-        pincode: newVendor.pincode,
-        assignedTeam: newVendor.assignedTeam,
+        id: `KYC-${saved._id}`,
+        vendorId: saved._id,
+        businessName: saved.name,
+        name: saved.name,
+        vendorName: saved.contactPerson,
+        phone: saved.phone,
+        email: saved.email,
+        category: saved.category,
+        address: saved.address,
+        state: saved.state,
+        district: saved.district,
+        division: saved.division,
+        pincode: saved.pincode,
         status: 'Pending Pincode Admin Approval',
         type: 'Vendor',
         submittedDocuments: [
           'GST Registration Certificate',
           'Business PAN Card',
-          'Trade / Municipal Health License',
           'Cancelled Cheque / Bank Passbook'
         ],
         submittedDate: new Date().toISOString().split('T')[0],
         verifiedBy: null,
-        notes: 'Awaiting Pincode Admin clearance before KYC review'
+        notes: `Onboarded by ${req.user?.name || 'Field Manager'}. Awaiting Pincode Admin clearance.`
       });
     }
 
-    return res.status(201).json({ success: true, vendor: newVendor });
+    const populated = await populateVendorLocations(saved);
+
+    return res.status(201).json({
+      success: true,
+      message: 'Vendor created successfully',
+      vendor: populated,
+      data: populated
+    });
   } catch (error) {
+    console.error('Failed to create vendor:', error);
     return res.status(500).json({ success: false, message: 'Failed to create vendor', error: error.message });
   }
-}
+};
 
-/**
- * Pincode Admin Verification:
- * Step 1 in Vendor KYC workflow.
- * Action: 'Accept' | 'Reject'
- * If Reject: rejectionReason is mandatory.
- */
-function pincodeAdminVerifyVendor(req, res) {
+const updateVendor = async (req, res) => {
   try {
     const { id } = req.params;
-    const { action, rejectionReason } = req.body;
-
-    const vendor = db.vendors.find(v => v.id === id);
+    const vendor = await db.vendors.findById(id);
     if (!vendor) {
       return res.status(404).json({ success: false, message: 'Vendor not found' });
     }
 
-    if (req.user && req.user.role !== 'Pincode Admin' && req.user.role !== 'Super Admin') {
-      return res.status(403).json({ success: false, message: 'Only Pincode Admin can perform Stage 1 verification' });
+    const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.id;
+
+    const updated = await db.vendors.findByIdAndUpdate(id, updateData);
+
+    await db.auditLogs.insertOne({
+      action: 'VENDOR_UPDATED',
+      recordId: id,
+      userId: req.user?.id || req.user?._id,
+      userName: req.user?.name || 'User',
+      userRole: req.user?.role || 'Manager',
+      details: `Vendor '${vendor.businessName || vendor.name}' profile details updated.`,
+      ip: req.ip || '127.0.0.1'
+    });
+
+    const populated = await populateVendorLocations(updated);
+
+    return res.json({
+      success: true,
+      message: 'Vendor updated successfully',
+      vendor: populated,
+      data: populated
+    });
+  } catch (error) {
+    console.error('Failed to update vendor:', error);
+    return res.status(500).json({ success: false, message: 'Failed to update vendor', error: error.message });
+  }
+};
+
+const updateVendorStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, statusNotes } = req.body;
+
+    if (!status) {
+      return res.status(400).json({ success: false, message: 'Status is required' });
+    }
+
+    const vendor = await db.vendors.findById(id);
+    if (!vendor) {
+      return res.status(404).json({ success: false, message: 'Vendor not found' });
+    }
+
+    const updated = await db.vendors.findByIdAndUpdate(id, {
+      status,
+      statusNotes: statusNotes || vendor.statusNotes
+    });
+
+    await db.auditLogs.insertOne({
+      action: 'VENDOR_STATUS_UPDATED',
+      recordId: id,
+      userId: req.user?.id || req.user?._id,
+      userName: req.user?.name || 'User',
+      userRole: req.user?.role || 'Manager',
+      details: `Vendor status transitioned from '${vendor.status}' to '${status}'. Notes: ${statusNotes || 'None'}`,
+      ip: req.ip || '127.0.0.1'
+    });
+
+    const populated = await populateVendorLocations(updated);
+
+    return res.json({
+      success: true,
+      message: `Vendor status updated to ${status}`,
+      vendor: populated,
+      data: populated
+    });
+  } catch (error) {
+    console.error('Failed to update vendor status:', error);
+    return res.status(500).json({ success: false, message: 'Failed to update vendor status', error: error.message });
+  }
+};
+
+const pincodeAdminVerifyVendor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { action, rejectionReason } = req.body;
+
+    const vendor = await db.vendors.findById(id);
+    if (!vendor) {
+      return res.status(404).json({ success: false, message: 'Vendor not found' });
     }
 
     if (!['Accept', 'Reject', 'accept', 'reject'].includes(action)) {
@@ -218,73 +466,64 @@ function pincodeAdminVerifyVendor(req, res) {
     const decidedBy = `${req.user.name} (${req.user.role || 'Pincode Admin'})`;
     const decidedAt = new Date().toISOString();
 
-    if (isReject) {
-      vendor.pincodeAdminApproval = {
-        status: 'Rejected',
-        decidedBy,
-        decidedAt,
-        rejectionReason: rejectionReason.trim()
-      };
-      vendor.approvalStatus = 'Pincode Admin Rejected';
-      vendor.kycStatus = 'Pincode Admin Rejected';
-      vendor.status = 'Rejected';
-    } else {
-      vendor.pincodeAdminApproval = {
-        status: 'Approved',
-        decidedBy,
-        decidedAt,
-        rejectionReason: null
-      };
-      vendor.approvalStatus = 'Pincode Admin Approved';
-      vendor.kycStatus = 'KYC Pending';
-      vendor.status = 'Pending KYC Review';
-    }
+    const updates = isReject
+      ? {
+          status: 'Rejected',
+          approvalStatus: 'Pincode Admin Rejected',
+          kycStatus: 'Pincode Admin Rejected',
+          pincodeAdminApproval: { status: 'Rejected', decidedBy, decidedAt, rejectionReason: rejectionReason.trim() }
+        }
+      : {
+          status: 'Pending KYC Review',
+          approvalStatus: 'Pincode Admin Approved',
+          kycStatus: 'KYC Pending',
+          pincodeAdminApproval: { status: 'Approved', decidedBy, decidedAt, rejectionReason: null }
+        };
 
-    // Sync matching KYC record
-    const kycRecord = (db.kycRecords || []).find(k => k.id === `KYC-${vendor.id}` || k.vendorId === vendor.id);
+    const updated = await db.vendors.findByIdAndUpdate(id, updates);
+
+    // Sync KYC records
+    const kycRecord = (db.kycRecords || []).find(k => k.id === `KYC-${id}` || k.vendorId === id);
     if (kycRecord) {
-      kycRecord.status = vendor.kycStatus;
+      kycRecord.status = updates.kycStatus;
       kycRecord.verifiedBy = decidedBy;
       kycRecord.verifiedDate = decidedAt.split('T')[0];
-      if (isReject) {
-        kycRecord.notes = `Rejected by Pincode Admin: ${rejectionReason.trim()}`;
-      } else {
-        kycRecord.notes = 'Approved by Pincode Admin. Forwarded to KYC Team for final compliance verification.';
-      }
+      kycRecord.notes = isReject ? `Rejected by Pincode Admin: ${rejectionReason.trim()}` : 'Approved by Pincode Admin. Forwarded to KYC Team.';
     }
+
+    // Audit log
+    await db.auditLogs.insertOne({
+      action: isReject ? 'VENDOR_PINCODE_REJECTED' : 'VENDOR_PINCODE_ACCEPTED',
+      recordId: id,
+      userId: req.user?.id || req.user?._id,
+      userName: req.user?.name || 'Admin',
+      userRole: req.user?.role || 'Pincode Admin',
+      details: isReject ? `Pincode Admin rejected vendor: ${rejectionReason.trim()}` : `Pincode Admin approved vendor. Forwarded for KYC audit.`,
+      ip: req.ip || '127.0.0.1'
+    });
+
+    const populated = await populateVendorLocations(updated);
 
     return res.json({
       success: true,
       message: isReject ? 'Vendor rejected by Pincode Admin' : 'Vendor accepted by Pincode Admin and forwarded to KYC Team',
-      vendor
+      vendor: populated,
+      data: populated
     });
   } catch (error) {
+    console.error('Failed to verify vendor:', error);
     return res.status(500).json({ success: false, message: 'Failed to verify vendor', error: error.message });
   }
-}
+};
 
-/**
- * KYC Team Verification:
- * Step 2 in Vendor KYC workflow (final step).
- * Action: 'Approve' | 'Reject'
- * If Reject: rejectionReason is mandatory.
- */
-function kycVerifyVendor(req, res) {
+const kycVerifyVendor = async (req, res) => {
   try {
     const { id } = req.params;
     const { action, rejectionReason } = req.body;
 
-    const vendor = db.vendors.find(v => v.id === id);
+    const vendor = await db.vendors.findById(id);
     if (!vendor) {
       return res.status(404).json({ success: false, message: 'Vendor not found' });
-    }
-
-    // Ensure vendor has passed Pincode Admin approval first
-    if (vendor.pincodeAdminApproval?.status !== 'Approved' && vendor.kycStatus === 'Pending Pincode Admin Approval') {
-      return res.status(400).json({
-        success: false,
-        message: 'Vendor must be approved by the assigned Pincode Admin before KYC team verification.'
-      });
     }
 
     if (!['Approve', 'Reject', 'approve', 'reject'].includes(action)) {
@@ -299,55 +538,62 @@ function kycVerifyVendor(req, res) {
     const decidedBy = `${req.user.name} (${req.user.role || 'KYC Team'})`;
     const decidedAt = new Date().toISOString();
 
-    if (isReject) {
-      vendor.kycTeamApproval = {
-        status: 'Rejected',
-        decidedBy,
-        decidedAt,
-        rejectionReason: rejectionReason.trim()
-      };
-      vendor.approvalStatus = 'KYC Rejected';
-      vendor.kycStatus = 'KYC Rejected';
-      vendor.status = 'KYC Rejected';
-    } else {
-      vendor.kycTeamApproval = {
-        status: 'Approved',
-        decidedBy,
-        decidedAt,
-        rejectionReason: null
-      };
-      vendor.approvalStatus = 'KYC Approved';
-      vendor.kycStatus = 'KYC Approved';
-      vendor.status = 'Active';
-    }
+    const updates = isReject
+      ? {
+          status: 'KYC Rejected',
+          approvalStatus: 'KYC Rejected',
+          kycStatus: 'KYC Rejected',
+          kycTeamApproval: { status: 'Rejected', decidedBy, decidedAt, rejectionReason: rejectionReason.trim() }
+        }
+      : {
+          status: 'Active',
+          approvalStatus: 'KYC Approved',
+          kycStatus: 'KYC Approved',
+          kycTeamApproval: { status: 'Approved', decidedBy, decidedAt, rejectionReason: null }
+        };
 
-    // Sync KYC record
-    const kycRecord = (db.kycRecords || []).find(k => k.id === `KYC-${vendor.id}` || k.vendorId === vendor.id);
+    const updated = await db.vendors.findByIdAndUpdate(id, updates);
+
+    // Sync KYC records
+    const kycRecord = (db.kycRecords || []).find(k => k.id === `KYC-${id}` || k.vendorId === id);
     if (kycRecord) {
-      kycRecord.status = vendor.kycStatus;
+      kycRecord.status = updates.kycStatus;
       kycRecord.verifiedBy = decidedBy;
       kycRecord.verifiedDate = decidedAt.split('T')[0];
-      if (isReject) {
-        kycRecord.notes = `KYC Rejected: ${rejectionReason.trim()}`;
-      } else {
-        kycRecord.notes = 'KYC Clearance Completed. Merchant certified for network platform operations.';
-      }
+      kycRecord.notes = isReject ? `KYC Rejected: ${rejectionReason.trim()}` : 'KYC Clearance Completed. Merchant certified.';
     }
+
+    // Audit log
+    await db.auditLogs.insertOne({
+      action: isReject ? 'VENDOR_KYC_REJECTED' : 'VENDOR_KYC_APPROVED',
+      recordId: id,
+      userId: req.user?.id || req.user?._id,
+      userName: req.user?.name || 'Admin',
+      userRole: req.user?.role || 'Admin',
+      details: isReject ? `KYC rejected: ${rejectionReason.trim()}` : `Vendor KYC approved. Status is now Active.`,
+      ip: req.ip || '127.0.0.1'
+    });
+
+    const populated = await populateVendorLocations(updated);
 
     return res.json({
       success: true,
       message: isReject ? 'Vendor KYC rejected' : 'Vendor KYC approved successfully',
-      vendor
+      vendor: populated,
+      data: populated
     });
   } catch (error) {
+    console.error('Failed to verify KYC:', error);
     return res.status(500).json({ success: false, message: 'Failed to verify KYC', error: error.message });
   }
-}
+};
 
 module.exports = {
   getVendors,
   getVendorById,
   createVendor,
+  updateVendor,
+  updateVendorStatus,
   lookupPincode,
   pincodeAdminVerifyVendor,
   kycVerifyVendor

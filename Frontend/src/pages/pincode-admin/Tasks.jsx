@@ -14,58 +14,7 @@ import {
   User
 } from 'lucide-react';
 
-const INITIAL_PINCODE_TASKS = [
-  {
-    id: 'TSK-3001',
-    title: 'Verify Fort Bazaar New Merchant Onboarding & Document Upload',
-    category: 'KYC Clearance',
-    priority: 'Urgent',
-    assignedTo: 'Salem North Field Agent',
-    pincode: '636001',
-    dueDate: '2026-09-12',
-    status: 'In Progress'
-  },
-  {
-    id: 'TSK-3002',
-    title: 'Audit Local POS Terminal Gateway Connectivity at Bazaar Street',
-    category: 'POS Maintenance',
-    priority: 'High',
-    assignedTo: 'Field Operations Lead',
-    pincode: '636001',
-    dueDate: '2026-09-14',
-    status: 'Pending'
-  },
-  {
-    id: 'TSK-3003',
-    title: 'Inspect Morning Milk Delivery Hub Handover & Cold Storage',
-    category: 'Operations',
-    priority: 'Normal',
-    assignedTo: 'Delivery Supervisor',
-    pincode: '636001',
-    dueDate: '2026-09-10',
-    status: 'Completed'
-  },
-  {
-    id: 'TSK-3004',
-    title: 'Reconcile Weekend Agent Commission Collection Batches',
-    category: 'Payout Reconciliation',
-    priority: 'High',
-    assignedTo: 'Pincode Admin Desk',
-    pincode: '636001',
-    dueDate: '2026-09-13',
-    status: 'In Progress'
-  },
-  {
-    id: 'TSK-3005',
-    title: 'Verify Local Technician Safety Toolkits & Helmet Compliance',
-    category: 'Safety Audit',
-    priority: 'Normal',
-    assignedTo: 'Field Compliance Officer',
-    pincode: '636001',
-    dueDate: '2026-09-08',
-    status: 'Completed'
-  }
-];
+const INITIAL_PINCODE_TASKS = [];
 
 export function PincodeTasks() {
   const { user } = useAuth();

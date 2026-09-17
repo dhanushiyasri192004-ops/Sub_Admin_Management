@@ -31,7 +31,7 @@ export function DivisionalSettings() {
               <label className="block text-slate-600 dark:text-slate-400 mb-1 font-medium">Officer Name</label>
               <input
                 type="text"
-                defaultValue={user?.name || 'Karthik Subramanian'}
+                defaultValue={user?.name || ''}
                 className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none"
               />
             </div>

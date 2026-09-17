@@ -26,48 +26,7 @@ export function DistrictDivisionDetails() {
 
   const [selectedDivision, setSelectedDivision] = useState(null);
 
-  const divisionCards = [
-    {
-      id: 'DIV-SLM-N',
-      name: 'Salem North',
-      district: 'Salem',
-      admin: 'Karthik Subramanian',
-      pincodes: ['636001', '636002'],
-      totalCustomers: 2400,
-      totalVendors: 4,
-      totalOrders: 10,
-      totalManagers: 2,
-      totalAgents: 8,
-      pendingKYC: 2,
-      totalBookings: 6,
-      totalJobApplied: 15,
-      deliveryPartner: 5,
-      technician: 4,
-      executive: 3,
-      totalMembershipCards: 820,
-      status: 'Active'
-    },
-    {
-      id: 'DIV-SLM-S',
-      name: 'Salem South',
-      district: 'Salem',
-      admin: 'Venkatesh Rao',
-      pincodes: ['636003', '636004'],
-      totalCustomers: 1870,
-      totalVendors: 2,
-      totalOrders: 8,
-      totalManagers: 2,
-      totalAgents: 6,
-      pendingKYC: 1,
-      totalBookings: 6,
-      totalJobApplied: 13,
-      deliveryPartner: 4,
-      technician: 4,
-      executive: 2,
-      totalMembershipCards: 600,
-      status: 'Active'
-    }
-  ];
+  const divisionCards = [];
 
   const getWorkforceMetrics = (div) => [
     { label: 'Total Managers', value: div.totalManagers, icon: UserCog, color: 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/60 dark:text-indigo-400 border-indigo-100 dark:border-indigo-900/50' },
@@ -95,80 +54,88 @@ export function DistrictDivisionDetails() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {divisionCards.map((div) => (
-          <div
-            key={div.id}
-            className="admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4 rounded-2xl"
-          >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-2">
-              <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shrink-0">
-                  <Layers className="w-5 h-5" />
+      {divisionCards.length === 0 ? (
+        <div className="p-12 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] rounded-2xl">
+          <Layers className="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+          <p className="font-medium text-base text-slate-800 dark:text-slate-200">No divisions found</p>
+          <p className="text-xs mt-1 text-slate-400">There are no operational divisions configured for this district.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {divisionCards.map((div) => (
+            <div
+              key={div.id}
+              className="admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4 rounded-2xl"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-2">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shrink-0">
+                    <Layers className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-[15px] whitespace-nowrap truncate" title={`${div.name} Division`}>
+                      {div.name} Division
+                    </h3>
+                    <span className="text-[11px] text-slate-500 font-mono whitespace-nowrap block truncate">ID: {div.id}</span>
+                  </div>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-[15px] whitespace-nowrap truncate" title={`${div.name} Division`}>
-                    {div.name} Division
-                  </h3>
-                  <span className="text-[11px] text-slate-500 font-mono whitespace-nowrap block truncate">ID: {div.id}</span>
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900/50 shrink-0">
+                  {div.status}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 py-2">
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Pincodes</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{div.pincodes.length}</div>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Vendors</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{div.totalVendors}</div>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Orders</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{div.totalOrders}</div>
                 </div>
               </div>
-              <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900/50 shrink-0">
-                {div.status}
-              </span>
-            </div>
 
-            <div className="grid grid-cols-3 gap-3 py-2">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Pincodes</div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{div.pincodes.length}</div>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
+                  <span className="text-slate-500 dark:text-slate-400">Assigned Admin:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{div.admin}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
+                  <span className="text-slate-500 dark:text-slate-400">Total Customers:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{div.totalCustomers.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
+                  <span className="text-slate-500 dark:text-slate-400">Total Orders:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{div.totalOrders.toLocaleString()}</span>
+                </div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Vendors</div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{div.totalVendors}</div>
-              </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Orders</div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{div.totalOrders}</div>
-              </div>
-            </div>
 
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
-                <span className="text-slate-500 dark:text-slate-400">Assigned Admin:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{div.admin}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
-                <span className="text-slate-500 dark:text-slate-400">Total Customers:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{div.totalCustomers.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
-                <span className="text-slate-500 dark:text-slate-400">Total Orders:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{div.totalOrders.toLocaleString()}</span>
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/district-admin/pincodes?division=${encodeURIComponent(div.name)}`)}
+                  className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-400 dark:hover:bg-blue-900/60 transition cursor-pointer whitespace-nowrap"
+                >
+                  <span className="whitespace-nowrap">View Pincodes</span>
+                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedDivision(div)}
+                  className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-600 dark:hover:bg-blue-500 transition shadow-xs cursor-pointer whitespace-nowrap"
+                >
+                  <span className="whitespace-nowrap">View Details</span>
+                  <Eye className="w-3.5 h-3.5 shrink-0" />
+                </button>
               </div>
             </div>
-
-            <div className="pt-2 flex gap-2">
-              <button
-                type="button"
-                onClick={() => navigate(`/district-admin/pincodes?division=${encodeURIComponent(div.name)}`)}
-                className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-400 dark:hover:bg-blue-900/60 transition cursor-pointer whitespace-nowrap"
-              >
-                <span className="whitespace-nowrap">View Pincodes</span>
-                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedDivision(div)}
-                className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-600 dark:hover:bg-blue-500 transition shadow-xs cursor-pointer whitespace-nowrap"
-              >
-                <span className="whitespace-nowrap">View Details</span>
-                <Eye className="w-3.5 h-3.5 shrink-0" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Division Full Operational Details Modal */}
       <Modal

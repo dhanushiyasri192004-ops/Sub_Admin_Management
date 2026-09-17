@@ -41,65 +41,7 @@ const LEVEL_CONFIGS = {
     tableTitle: 'State Agent Network Roster',
     tableSubtitle: 'Master agent network, regional referrals, and commission settlements across all 38 districts',
     exportFile: 'state_agents.csv',
-    defaultData: [
-      {
-        id: 'AGT-STA-01',
-        name: 'Thirunavukkarasu R',
-        phone: '+91 98940 55101',
-        email: 'thiru.state@domain.com',
-        level: 'state',
-        role: 'State Agent',
-        jurisdiction: 'Tamil Nadu (State-wide)',
-        assignedArea: '38 Districts Coverage',
-        supervisorName: 'Apex Governance',
-        subordinatesCount: 3,
-        totalReferrals: 420,
-        activeSubscribers: 340,
-        vendorOnboardings: 128,
-        walletBalance: 28500,
-        totalEarned: 165000,
-        status: 'Active',
-        joinedDate: '10 Jan 2024'
-      },
-      {
-        id: 'AGT-STA-02',
-        name: 'Jayachandran Mohan',
-        phone: '+91 98940 55102',
-        email: 'jaya.state@domain.com',
-        level: 'state',
-        role: 'State Agent',
-        jurisdiction: 'Tamil Nadu (North Zone)',
-        assignedArea: '14 Districts Coverage',
-        supervisorName: 'Apex Governance',
-        subordinatesCount: 2,
-        totalReferrals: 310,
-        activeSubscribers: 245,
-        vendorOnboardings: 94,
-        walletBalance: 18200,
-        totalEarned: 122000,
-        status: 'Active',
-        joinedDate: '15 Mar 2024'
-      },
-      {
-        id: 'AGT-STA-03',
-        name: 'Senthil Nathan K',
-        phone: '+91 98940 55107',
-        email: 'senthil.state@domain.com',
-        level: 'state',
-        role: 'State Agent',
-        jurisdiction: 'Tamil Nadu (South Zone)',
-        assignedArea: '16 Districts Coverage',
-        supervisorName: 'Apex Governance',
-        subordinatesCount: 2,
-        totalReferrals: 285,
-        activeSubscribers: 210,
-        vendorOnboardings: 82,
-        walletBalance: 15400,
-        totalEarned: 98500,
-        status: 'Active',
-        joinedDate: '20 May 2024'
-      }
-    ]
+    defaultData: []
   },
   district: {
     title: 'District Agents',
@@ -111,68 +53,7 @@ const LEVEL_CONFIGS = {
     tableTitle: 'District Agent Directory',
     tableSubtitle: 'Territorial lead agents managing division clusters and district customer onboarding',
     exportFile: 'district_agents.csv',
-    defaultData: [
-      {
-        id: 'AGT-DST-01',
-        name: 'Karthik Subramanian',
-        phone: '+91 98401 22345',
-        email: 'karthik.district@domain.com',
-        level: 'district',
-        role: 'District Agent',
-        district: 'Salem',
-        jurisdiction: 'Salem District',
-        assignedArea: 'Salem North & South Divisions',
-        supervisorName: 'Thirunavukkarasu R (State Agent)',
-        subordinatesCount: 2,
-        totalReferrals: 195,
-        activeSubscribers: 155,
-        vendorOnboardings: 64,
-        walletBalance: 14500,
-        totalEarned: 84000,
-        status: 'Active',
-        joinedDate: '01 Feb 2025'
-      },
-      {
-        id: 'AGT-DST-02',
-        name: 'Venkatesh Babu',
-        phone: '+91 98402 33456',
-        email: 'venkat.district@domain.com',
-        level: 'district',
-        role: 'District Agent',
-        district: 'Coimbatore',
-        jurisdiction: 'Coimbatore District',
-        assignedArea: 'Coimbatore North & Central Divisions',
-        supervisorName: 'Thirunavukkarasu R (State Agent)',
-        subordinatesCount: 2,
-        totalReferrals: 230,
-        activeSubscribers: 190,
-        vendorOnboardings: 76,
-        walletBalance: 16800,
-        totalEarned: 96000,
-        status: 'Active',
-        joinedDate: '12 Feb 2025'
-      },
-      {
-        id: 'AGT-DST-03',
-        name: 'Madhavan S',
-        phone: '+91 98403 44567',
-        email: 'madhav.district@domain.com',
-        level: 'district',
-        role: 'District Agent',
-        district: 'Madurai',
-        jurisdiction: 'Madurai District',
-        assignedArea: 'Madurai Central & South Divisions',
-        supervisorName: 'Senthil Nathan K (State Agent)',
-        subordinatesCount: 1,
-        totalReferrals: 175,
-        activeSubscribers: 130,
-        vendorOnboardings: 48,
-        walletBalance: 11200,
-        totalEarned: 72000,
-        status: 'Active',
-        joinedDate: '05 Mar 2025'
-      }
-    ]
+    defaultData: []
   },
   divisional: {
     title: 'Divisional Agents',
@@ -184,71 +65,7 @@ const LEVEL_CONFIGS = {
     tableTitle: 'Divisional Agent Registry',
     tableSubtitle: 'Division outreach partners overseeing local postal pincode operations',
     exportFile: 'divisional_agents.csv',
-    defaultData: [
-      {
-        id: 'AGT-DIV-01',
-        name: 'Rajendran P',
-        phone: '+91 98940 77101',
-        email: 'rajendran.div@domain.com',
-        level: 'divisional',
-        role: 'Divisional Agent',
-        district: 'Salem',
-        division: 'Salem North',
-        jurisdiction: 'Salem North Division',
-        assignedArea: 'PIN: 636001, 636002',
-        supervisorName: 'Karthik Subramanian (District Agent)',
-        subordinatesCount: 2,
-        totalReferrals: 112,
-        activeSubscribers: 88,
-        vendorOnboardings: 38,
-        walletBalance: 9800,
-        totalEarned: 54000,
-        status: 'Active',
-        joinedDate: '10 Apr 2025'
-      },
-      {
-        id: 'AGT-DIV-02',
-        name: 'Anand Kumar V',
-        phone: '+91 98940 77102',
-        email: 'anand.div@domain.com',
-        level: 'divisional',
-        role: 'Divisional Agent',
-        district: 'Salem',
-        division: 'Salem South',
-        jurisdiction: 'Salem South Division',
-        assignedArea: 'PIN: 636003, 636004',
-        supervisorName: 'Karthik Subramanian (District Agent)',
-        subordinatesCount: 2,
-        totalReferrals: 98,
-        activeSubscribers: 74,
-        vendorOnboardings: 29,
-        walletBalance: 7600,
-        totalEarned: 46000,
-        status: 'Active',
-        joinedDate: '18 Apr 2025'
-      },
-      {
-        id: 'AGT-DIV-03',
-        name: 'Saravanan M',
-        phone: '+91 98940 77103',
-        email: 'saravanan.div@domain.com',
-        level: 'divisional',
-        role: 'Divisional Agent',
-        district: 'Coimbatore',
-        division: 'Coimbatore Central',
-        jurisdiction: 'Coimbatore Central Division',
-        assignedArea: 'PIN: 641001, 641002',
-        supervisorName: 'Venkatesh Babu (District Agent)',
-        subordinatesCount: 2,
-        totalReferrals: 135,
-        activeSubscribers: 105,
-        vendorOnboardings: 42,
-        walletBalance: 12400,
-        totalEarned: 68000,
-        status: 'Active',
-        joinedDate: '22 Apr 2025'
-      }
-    ]
+    defaultData: []
   },
   pincode: {
     title: 'Pincode Agents',
@@ -260,118 +77,7 @@ const LEVEL_CONFIGS = {
     tableTitle: 'Pincode Ground Agent Roster',
     tableSubtitle: 'Last-mile postal code franchise associates and active customer membership card distributors',
     exportFile: 'pincode_agents.csv',
-    defaultData: [
-      {
-        id: 'AGT-PIN-01',
-        name: 'Naveen Kumar M',
-        phone: '+91 98940 55103',
-        email: 'naveen.agent@gmail.com',
-        level: 'pincode',
-        role: 'Pincode Agent',
-        district: 'Salem',
-        division: 'Salem North',
-        pincode: '636001',
-        jurisdiction: 'PIN: 636001 (Salem Fort)',
-        assignedArea: 'Salem Town Fort Zone',
-        supervisorName: 'Rajendran P (Divisional Agent)',
-        subordinatesCount: 0,
-        totalReferrals: 94,
-        activeSubscribers: 72,
-        vendorOnboardings: 21,
-        walletBalance: 9800,
-        totalEarned: 52000,
-        status: 'Active',
-        joinedDate: '20 Jul 2024'
-      },
-      {
-        id: 'AGT-PIN-02',
-        name: 'Dinesh Karthik R',
-        phone: '+91 98940 88201',
-        email: 'dinesh.pincode@gmail.com',
-        level: 'pincode',
-        role: 'Pincode Agent',
-        district: 'Salem',
-        division: 'Salem North',
-        pincode: '636002',
-        jurisdiction: 'PIN: 636002 (Shevapet)',
-        assignedArea: 'Shevapet & Market Area',
-        supervisorName: 'Rajendran P (Divisional Agent)',
-        subordinatesCount: 0,
-        totalReferrals: 82,
-        activeSubscribers: 61,
-        vendorOnboardings: 17,
-        walletBalance: 6500,
-        totalEarned: 41000,
-        status: 'Active',
-        joinedDate: '05 Aug 2024'
-      },
-      {
-        id: 'AGT-PIN-03',
-        name: 'Pravin Chandran',
-        phone: '+91 98940 88202',
-        email: 'pravin.pincode@gmail.com',
-        level: 'pincode',
-        role: 'Pincode Agent',
-        district: 'Salem',
-        division: 'Salem South',
-        pincode: '636003',
-        jurisdiction: 'PIN: 636003 (Ammapet)',
-        assignedArea: 'Ammapet Colony Hub',
-        supervisorName: 'Anand Kumar V (Divisional Agent)',
-        subordinatesCount: 0,
-        totalReferrals: 76,
-        activeSubscribers: 58,
-        vendorOnboardings: 15,
-        walletBalance: 5900,
-        totalEarned: 37500,
-        status: 'Active',
-        joinedDate: '12 Aug 2024'
-      },
-      {
-        id: 'AGT-PIN-04',
-        name: 'Gowtham Raj',
-        phone: '+91 98940 88203',
-        email: 'gowtham.pincode@gmail.com',
-        level: 'pincode',
-        role: 'Pincode Agent',
-        district: 'Salem',
-        division: 'Salem South',
-        pincode: '636004',
-        jurisdiction: 'PIN: 636004 (Gugai)',
-        assignedArea: 'Gugai Industrial Area',
-        supervisorName: 'Anand Kumar V (Divisional Agent)',
-        subordinatesCount: 0,
-        totalReferrals: 68,
-        activeSubscribers: 49,
-        vendorOnboardings: 14,
-        walletBalance: 5100,
-        totalEarned: 32000,
-        status: 'Active',
-        joinedDate: '25 Aug 2024'
-      },
-      {
-        id: 'AGT-PIN-05',
-        name: 'Kavin Selvan',
-        phone: '+91 98940 88204',
-        email: 'kavin.cbe@gmail.com',
-        level: 'pincode',
-        role: 'Pincode Agent',
-        district: 'Coimbatore',
-        division: 'Coimbatore Central',
-        pincode: '641001',
-        jurisdiction: 'PIN: 641001 (Gandhipuram)',
-        assignedArea: 'Gandhipuram Commercial Hub',
-        supervisorName: 'Saravanan M (Divisional Agent)',
-        subordinatesCount: 0,
-        totalReferrals: 89,
-        activeSubscribers: 67,
-        vendorOnboardings: 19,
-        walletBalance: 7800,
-        totalEarned: 44000,
-        status: 'Active',
-        joinedDate: '02 Sep 2024'
-      }
-    ]
+    defaultData: []
   }
 };
 
@@ -412,26 +118,32 @@ export function StateAgents({ level = 'state' }) {
     try {
       // 1. Fetch Agents for active level
       const res = await dataService.getAgents({ level: activeLevel });
-      if (res.success && res.agents && res.agents.length > 0) {
+      if (res.success && res.agents) {
         setAgents(res.agents);
       } else {
-        setAgents(config.defaultData);
+        setAgents([]);
       }
 
       // 2. Fetch Activities matching visibility rules
       const actRes = await dataService.getAgentActivities();
       if (actRes.success && actRes.activities) {
         setActivities(actRes.activities);
+      } else {
+        setActivities([]);
       }
 
       // 3. Fetch Hierarchy Tree
       const hierRes = await dataService.getAgentHierarchy();
       if (hierRes.success && hierRes.tree) {
         setHierarchyData(hierRes.tree);
+      } else {
+        setHierarchyData([]);
       }
     } catch (e) {
       console.error('Failed to load agent hierarchy data:', e);
-      setAgents(config.defaultData);
+      setAgents([]);
+      setActivities([]);
+      setHierarchyData([]);
     } finally {
       setLoading(false);
     }
@@ -885,181 +597,111 @@ export function StateAgents({ level = 'state' }) {
             </p>
           </div>
 
-          {/* Root: State Agent Level */}
-          <div className="space-y-6">
-            <div className="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border-2 border-purple-200 dark:border-purple-800/60 max-w-xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-purple-600 text-white font-bold">
-                    <Award className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700 dark:text-purple-300">
-                      Tier 1 • State Agent (Apex)
-                    </span>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">Thirunavukkarasu R</h4>
-                    <div className="text-[11px] text-slate-500 font-mono">Tamil Nadu Statewide Governance • 38 Districts</div>
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-purple-700 dark:text-purple-300 bg-white dark:bg-purple-900/60 px-2.5 py-1 rounded-full border border-purple-200 dark:border-purple-700">
-                  Complete Visibility
-                </span>
-              </div>
-            </div>
-
-            {/* Branching to District Level */}
-            <div className="pl-6 border-l-2 border-dashed border-purple-300 dark:border-purple-800 ml-4 space-y-6">
-              {/* Salem District Node */}
-              <div className="space-y-4">
-                <div className="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 max-w-lg">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                      <div>
-                        <span className="text-[10px] font-bold uppercase text-blue-700 dark:text-blue-300">
-                          Tier 2 • District Agent
-                        </span>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white">
-                          Karthik Subramanian (Salem District)
+          {hierarchyData && hierarchyData.length > 0 ? (
+            <div className="space-y-6">
+              {hierarchyData.map((stateAg) => (
+                <div key={stateAg.id || stateAg.agentId} className="space-y-6">
+                  {/* Root: State Agent Level */}
+                  <div className="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border-2 border-purple-200 dark:border-purple-800/60 max-w-xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="p-2 rounded-xl bg-purple-600 text-white font-bold">
+                          <Award className="w-5 h-5" />
                         </div>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400">
-                      Supervises 2 Divisions
-                    </span>
-                  </div>
-                </div>
-
-                {/* Branching to Salem North & Salem South Divisions */}
-                <div className="pl-6 border-l-2 border-dashed border-blue-300 dark:border-blue-800 ml-4 space-y-4">
-                  {/* Division 1: Salem North */}
-                  <div className="space-y-3">
-                    <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 max-w-md">
-                      <div className="flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                         <div>
-                          <span className="text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-300">
-                            Tier 3 • Divisional Agent
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700 dark:text-purple-300">
+                            Tier 1 • State Agent (Apex)
                           </span>
-                          <div className="text-xs font-bold text-slate-900 dark:text-white">
-                            Rajendran P (Salem North Division)
+                          <h4 className="text-sm font-bold text-slate-900 dark:text-white">{stateAg.name}</h4>
+                          <div className="text-[11px] text-slate-500 font-mono">{stateAg.jurisdiction || stateAg.state || 'Statewide Governance'}</div>
+                        </div>
+                      </div>
+                      <span className="text-xs font-bold text-purple-700 dark:text-purple-300 bg-white dark:bg-purple-900/60 px-2.5 py-1 rounded-full border border-purple-200 dark:border-purple-700">
+                        Complete Visibility
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Branching to District Level */}
+                  {stateAg.children && stateAg.children.length > 0 && (
+                    <div className="pl-6 border-l-2 border-dashed border-purple-300 dark:border-purple-800 ml-4 space-y-6">
+                      {stateAg.children.map((distAg) => (
+                        <div key={distAg.id || distAg.agentId} className="space-y-4">
+                          <div className="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 max-w-lg">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                <div>
+                                  <span className="text-[10px] font-bold uppercase text-blue-700 dark:text-blue-300">
+                                    Tier 2 • District Agent
+                                  </span>
+                                  <div className="text-xs font-bold text-slate-900 dark:text-white">
+                                    {distAg.name} ({distAg.district || distAg.jurisdiction || 'District'})
+                                  </div>
+                                </div>
+                              </div>
+                              <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400">
+                                {distAg.children ? `Supervises ${distAg.children.length} Division${distAg.children.length === 1 ? '' : 's'}` : 'Supervises Divisions'}
+                              </span>
+                            </div>
                           </div>
+
+                          {/* Branching to Division Level */}
+                          {distAg.children && distAg.children.length > 0 && (
+                            <div className="pl-6 border-l-2 border-dashed border-blue-300 dark:border-blue-800 ml-4 space-y-4">
+                              {distAg.children.map((divAg) => (
+                                <div key={divAg.id || divAg.agentId} className="space-y-3">
+                                  <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 max-w-md">
+                                    <div className="flex items-center gap-2">
+                                      <Layers className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                                      <div>
+                                        <span className="text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-300">
+                                          Tier 3 • Divisional Agent
+                                        </span>
+                                        <div className="text-xs font-bold text-slate-900 dark:text-white">
+                                          {divAg.name} ({divAg.division || divAg.jurisdiction || 'Division'})
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Pincode Agents under Division */}
+                                  {divAg.children && divAg.children.length > 0 && (
+                                    <div className="pl-6 border-l-2 border-dashed border-emerald-300 dark:border-emerald-800 ml-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-md">
+                                      {divAg.children.map((pinAg) => (
+                                        <div key={pinAg.id || pinAg.agentId} className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">
+                                          <div className="flex items-center gap-1.5">
+                                            <MapPin className="w-3 h-3 text-amber-600" />
+                                            <span className="text-xs font-bold text-slate-900 dark:text-white">{pinAg.name}</span>
+                                          </div>
+                                          <div className="text-[10px] text-amber-700 dark:text-amber-300 font-mono mt-0.5">
+                                            PIN: {pinAg.pincode || pinAg.jurisdiction || 'Pincode'}
+                                          </div>
+                                          <div className="text-[10px] text-slate-500 mt-0.5">
+                                            {pinAg.vendorsOnboarded ?? 0} Vendors Onboarded
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      </div>
+                      ))}
                     </div>
-
-                    {/* Pincode Agents under Salem North */}
-                    <div className="pl-6 border-l-2 border-dashed border-emerald-300 dark:border-emerald-800 ml-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-md">
-                      <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="w-3 h-3 text-amber-600" />
-                          <span className="text-xs font-bold text-slate-900 dark:text-white">Naveen Kumar M</span>
-                        </div>
-                        <div className="text-[10px] text-amber-700 dark:text-amber-300 font-mono mt-0.5">PIN: 636001 (Salem Fort)</div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">21 Vendors Onboarded</div>
-                      </div>
-
-                      <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="w-3 h-3 text-amber-600" />
-                          <span className="text-xs font-bold text-slate-900 dark:text-white">Dinesh Karthik R</span>
-                        </div>
-                        <div className="text-[10px] text-amber-700 dark:text-amber-300 font-mono mt-0.5">PIN: 636002 (Shevapet)</div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">17 Vendors Onboarded</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Division 2: Salem South */}
-                  <div className="space-y-3">
-                    <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 max-w-md">
-                      <div className="flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                        <div>
-                          <span className="text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-300">
-                            Tier 3 • Divisional Agent
-                          </span>
-                          <div className="text-xs font-bold text-slate-900 dark:text-white">
-                            Anand Kumar V (Salem South Division)
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Pincode Agents under Salem South */}
-                    <div className="pl-6 border-l-2 border-dashed border-emerald-300 dark:border-emerald-800 ml-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-md">
-                      <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="w-3 h-3 text-amber-600" />
-                          <span className="text-xs font-bold text-slate-900 dark:text-white">Pravin Chandran</span>
-                        </div>
-                        <div className="text-[10px] text-amber-700 dark:text-amber-300 font-mono mt-0.5">PIN: 636003 (Ammapet)</div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">15 Vendors Onboarded</div>
-                      </div>
-
-                      <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="w-3 h-3 text-amber-600" />
-                          <span className="text-xs font-bold text-slate-900 dark:text-white">Gowtham Raj</span>
-                        </div>
-                        <div className="text-[10px] text-amber-700 dark:text-amber-300 font-mono mt-0.5">PIN: 636004 (Gugai)</div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">14 Vendors Onboarded</div>
-                      </div>
-                    </div>
-                  </div>
+                  )}
                 </div>
-              </div>
-
-              {/* Coimbatore District Node */}
-              <div className="space-y-4">
-                <div className="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 max-w-lg">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                      <div>
-                        <span className="text-[10px] font-bold uppercase text-blue-700 dark:text-blue-300">
-                          Tier 2 • District Agent
-                        </span>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white">
-                          Venkatesh Babu (Coimbatore District)
-                        </div>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400">
-                      Supervises Central Division
-                    </span>
-                  </div>
-                </div>
-
-                <div className="pl-6 border-l-2 border-dashed border-blue-300 dark:border-blue-800 ml-4 space-y-3">
-                  <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 max-w-md">
-                    <div className="flex items-center gap-2">
-                      <Layers className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                      <div>
-                        <span className="text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-300">
-                          Tier 3 • Divisional Agent
-                        </span>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white">
-                          Saravanan M (Coimbatore Central)
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pl-6 border-l-2 border-dashed border-emerald-300 dark:border-emerald-800 ml-3 max-w-xs">
-                    <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3 h-3 text-amber-600" />
-                        <span className="text-xs font-bold text-slate-900 dark:text-white">Kavin Selvan</span>
-                      </div>
-                      <div className="text-[10px] text-amber-700 dark:text-amber-300 font-mono mt-0.5">PIN: 641001 (Gandhipuram)</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">19 Vendors Onboarded</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="text-center py-12 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+              <GitFork className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No organizational hierarchy nodes recorded</p>
+              <p className="text-xs text-slate-500 mt-1">Live structural hierarchy will appear here once agents are assigned to jurisdiction tiers.</p>
+            </div>
+          )}
         </div>
       )}
 

@@ -22,13 +22,13 @@ export function PincodeProfile() {
           />
           <div className="flex-1 text-center sm:text-left space-y-1">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{user?.name || 'Priya Narayanan'}</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{user?.name || 'Pincode Admin'}</h3>
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40 w-fit mx-auto sm:mx-0">
                 Pincode Admin (PIN {pincode})
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Station Area: <span className="font-semibold text-slate-800 dark:text-slate-200">{user?.areaName || 'Salem Town Fort'}</span>, {user?.district || 'Salem'}
+              Station Area: <span className="font-semibold text-slate-800 dark:text-slate-200">{user?.areaName || 'Zone'}</span>, {user?.district || 'District'}
             </p>
             <div className="pt-3 flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5">

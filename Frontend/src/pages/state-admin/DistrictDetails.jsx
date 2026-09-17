@@ -29,71 +29,7 @@ export function StateDistrictDetails() {
 
   const [selectedDistrict, setSelectedDistrict] = useState(null);
 
-  const districtsData = [
-    {
-      id: 'DST-SALEM',
-      name: 'Salem',
-      code: 'SLM',
-      admin: 'Rajesh Sharma',
-      divisions: ['Salem North', 'Salem South'],
-      pincodesCount: 4,
-      totalCustomers: 4270,
-      totalVendors: 6,
-      totalManagers: 4,
-      totalAgents: 14,
-      pendingKYC: 3,
-      totalOrders: 18,
-      totalBookings: 12,
-      totalJobApplied: 28,
-      deliveryPartner: 9,
-      technician: 8,
-      executive: 5,
-      totalMembershipCards: 1420,
-      status: 'Active'
-    },
-    {
-      id: 'DST-CBE',
-      name: 'Coimbatore',
-      code: 'CBE',
-      admin: 'Sundar Raman',
-      divisions: ['Coimbatore Central', 'Coimbatore North'],
-      pincodesCount: 4,
-      totalCustomers: 7500,
-      totalVendors: 9,
-      totalManagers: 6,
-      totalAgents: 22,
-      pendingKYC: 5,
-      totalOrders: 24,
-      totalBookings: 19,
-      totalJobApplied: 45,
-      deliveryPartner: 16,
-      technician: 14,
-      executive: 8,
-      totalMembershipCards: 2850,
-      status: 'Active'
-    },
-    {
-      id: 'DST-MDU',
-      name: 'Madurai',
-      code: 'MDU',
-      admin: 'Kavitha Ramachandran',
-      divisions: ['Madurai North', 'Madurai South'],
-      pincodesCount: 4,
-      totalCustomers: 5890,
-      totalVendors: 7,
-      totalManagers: 5,
-      totalAgents: 18,
-      pendingKYC: 4,
-      totalOrders: 21,
-      totalBookings: 15,
-      totalJobApplied: 36,
-      deliveryPartner: 12,
-      technician: 11,
-      executive: 6,
-      totalMembershipCards: 1980,
-      status: 'Active'
-    }
-  ];
+  const districtsData = [];
 
   const getWorkforceMetrics = (dst) => [
     { label: 'Total Managers', value: dst.totalManagers, icon: UserCog, color: 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/60 dark:text-indigo-400 border-indigo-100 dark:border-indigo-900/50' },
@@ -152,80 +88,88 @@ export function StateDistrictDetails() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {displayDistricts.map((dst) => (
-          <div
-            key={dst.id}
-            className="admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4 rounded-2xl"
-          >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-2">
-              <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shrink-0">
-                  <Building2 className="w-5 h-5" />
+      {displayDistricts.length === 0 ? (
+        <div className="p-12 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] rounded-2xl">
+          <Building2 className="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+          <p className="font-medium text-base text-slate-800 dark:text-slate-200">No districts found</p>
+          <p className="text-xs mt-1 text-slate-400">There are no operational districts configured for this view.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {displayDistricts.map((dst) => (
+            <div
+              key={dst.id}
+              className="admin-card p-5 bg-white dark:bg-[#131f37] border border-slate-200/90 dark:border-[#1f3358] shadow-sm space-y-4 rounded-2xl"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-2">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shrink-0">
+                    <Building2 className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-[15px] whitespace-nowrap truncate" title={`${dst.name} District`}>
+                      {dst.name} District
+                    </h3>
+                    <span className="text-[11px] text-slate-500 font-mono whitespace-nowrap block truncate">ID: {dst.id}</span>
+                  </div>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-[15px] whitespace-nowrap truncate" title={`${dst.name} District`}>
-                    {dst.name} District
-                  </h3>
-                  <span className="text-[11px] text-slate-500 font-mono whitespace-nowrap block truncate">ID: {dst.id}</span>
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900/50 shrink-0">
+                  {dst.status}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 py-2">
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Divisions</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{dst.divisions.length}</div>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Pincodes</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{dst.pincodesCount}</div>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Vendors</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{dst.totalVendors}</div>
                 </div>
               </div>
-              <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900/50 shrink-0">
-                {dst.status}
-              </span>
-            </div>
 
-            <div className="grid grid-cols-3 gap-3 py-2">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Divisions</div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{dst.divisions.length}</div>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
+                  <span className="text-slate-500 dark:text-slate-400">Assigned Admin:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{dst.admin}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
+                  <span className="text-slate-500 dark:text-slate-400">Total Customers:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{dst.totalCustomers.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
+                  <span className="text-slate-500 dark:text-slate-400">Total Orders:</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{dst.totalOrders.toLocaleString()}</span>
+                </div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Pincodes</div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{dst.pincodesCount}</div>
-              </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 text-center">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Vendors</div>
-                <div className="text-lg font-bold text-slate-900 dark:text-white mt-1">{dst.totalVendors}</div>
-              </div>
-            </div>
 
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
-                <span className="text-slate-500 dark:text-slate-400">Assigned Admin:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{dst.admin}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
-                <span className="text-slate-500 dark:text-slate-400">Total Customers:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{dst.totalCustomers.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/50">
-                <span className="text-slate-500 dark:text-slate-400">Total Orders:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{dst.totalOrders.toLocaleString()}</span>
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/state-admin/division-details?district=${encodeURIComponent(dst.name)}`)}
+                  className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-400 dark:hover:bg-blue-900/60 transition cursor-pointer whitespace-nowrap"
+                >
+                  <span className="whitespace-nowrap">View Divisions</span>
+                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedDistrict(dst)}
+                  className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-600 dark:hover:bg-blue-500 transition shadow-xs cursor-pointer whitespace-nowrap"
+                >
+                  <span className="whitespace-nowrap">View Details</span>
+                  <Eye className="w-3.5 h-3.5 shrink-0" />
+                </button>
               </div>
             </div>
-
-            <div className="pt-2 flex gap-2">
-              <button
-                type="button"
-                onClick={() => navigate(`/state-admin/division-details?district=${encodeURIComponent(dst.name)}`)}
-                className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-400 dark:hover:bg-blue-900/60 transition cursor-pointer whitespace-nowrap"
-              >
-                <span className="whitespace-nowrap">View Divisions</span>
-                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedDistrict(dst)}
-                className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-600 dark:hover:bg-blue-500 transition shadow-xs cursor-pointer whitespace-nowrap"
-              >
-                <span className="whitespace-nowrap">View Details</span>
-                <Eye className="w-3.5 h-3.5 shrink-0" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* District Full Operational Details Modal */}
       <Modal

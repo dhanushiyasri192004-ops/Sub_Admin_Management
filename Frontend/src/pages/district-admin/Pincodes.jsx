@@ -24,119 +24,27 @@ export function DistrictPincodes() {
   const divisionFilter = searchParams.get('division');
 
   const getPincodeAdminDetails = (row) => {
-    const adminProfiles = {
-      '636001': {
-        id: 'ADM-PIN-636001',
-        employeeCode: 'EMP-TN-PIN-001',
-        name: 'Priya Narayanan',
-        email: 'pincode_admin@admin.com',
-        phone: '+91 98765 43213',
-        emergencyPhone: '+91 98765 43293',
-        pincode: '636001',
-        area: 'Salem Town Fort',
-        division: 'Salem North',
-        district: 'Salem',
-        state: 'Tamil Nadu',
-        totalCustomers: 1420,
-        population: '84,500',
-        status: row.status || 'Active',
-        joinedDate: '15 Jan 2026',
-        qualification: 'B.Tech in Information Technology, PGD in Operations',
-        experience: '5+ years in Hyperlocal Ground Logistics & Operations',
-        specialization: 'Last-Mile Delivery Coordination & Merchant Support',
-        address: 'Hyperlocal Hub 636001, 12 Town Hall Road, Fort, Salem - 636001, Tamil Nadu'
-      },
-      '636002': {
-        id: 'ADM-PIN-636002',
-        employeeCode: 'EMP-TN-PIN-002',
-        name: 'Suresh Raina',
-        email: 'pincode_admin_636002@admin.com',
-        phone: '+91 98765 43214',
-        emergencyPhone: '+91 98765 43294',
-        pincode: '636002',
-        area: 'Shevapet & Market',
-        division: 'Salem North',
-        district: 'Salem',
-        state: 'Tamil Nadu',
-        totalCustomers: 980,
-        population: '62,100',
-        status: row.status || 'Active',
-        joinedDate: '18 Jan 2026',
-        qualification: 'B.Com in E-Commerce & Logistics, Supply Chain Certificate',
-        experience: '4+ years in Wholesale Market Operations & Field Ops',
-        specialization: 'B2B Vendor Management & Delivery Ops',
-        address: 'Zonal Pincode Office, 45 Bazaar Street, Shevapet, Salem - 636002, Tamil Nadu'
-      },
-      '636003': {
-        id: 'ADM-PIN-636003',
-        employeeCode: 'EMP-TN-PIN-003',
-        name: 'Venkatesh Babu',
-        email: 'venkatesh_babu_admin@admin.com',
-        phone: '+91 98403 77889',
-        emergencyPhone: '+91 98403 77899',
-        pincode: '636003',
-        area: 'Ammapet Colony',
-        division: 'Salem South',
-        district: 'Salem',
-        state: 'Tamil Nadu',
-        totalCustomers: 1150,
-        population: '75,400',
-        status: row.status || 'Active',
-        joinedDate: '20 Jan 2026',
-        qualification: 'B.Sc Computer Science, Diploma in Logistics',
-        experience: '6+ years in Retail Zone Management & Local Logistics',
-        specialization: 'Customer Grievance & Hyperlocal Service Delivery',
-        address: 'Pincode Service Center, 7 Colony Main Road, Ammapet, Salem - 636003, Tamil Nadu'
-      },
-      '636004': {
-        id: 'ADM-PIN-636004',
-        employeeCode: 'EMP-TN-PIN-004',
-        name: 'Meena Kumari',
-        email: 'meena_kumari_admin@admin.com',
-        phone: '+91 98403 99001',
-        emergencyPhone: '+91 98403 99099',
-        pincode: '636004',
-        area: 'Gugai Industrial Area',
-        division: 'Salem South',
-        district: 'Salem',
-        state: 'Tamil Nadu',
-        totalCustomers: 720,
-        population: '53,200',
-        status: row.status || 'Active',
-        joinedDate: '22 Jan 2026',
-        qualification: 'B.A. Public Relations, Diploma in Supply Chain Operations',
-        experience: '5+ years in Industrial Area Logistics & Cluster Management',
-        specialization: 'Industrial Supplies & Vendor Relations',
-        address: 'Gugai Cluster Nodal Office, 18 Industrial Estate Road, Gugai, Salem - 636004, Tamil Nadu'
-      }
-    };
-
-    const pin = String(row.pincode);
-    if (adminProfiles[pin]) {
-      return { ...adminProfiles[pin], status: row.status || 'Active' };
-    }
-
-    const adminName = row.assignedAdmin || row.adminName || `${row.areaName || pin} Admin`;
+    const adminName = row.adminName || row.assignedAdmin || 'Unassigned';
     return {
-      id: `ADM-PIN-${pin}`,
-      employeeCode: `EMP-TN-PIN-${pin.slice(-3)}`,
+      id: row.adminId || `ADM-PIN-${row.pincode}`,
+      employeeCode: row.employeeCode || '-',
       name: adminName,
-      email: `${adminName.toLowerCase().replace(/\s+/g, '_')}_admin@admin.com`,
-      phone: '+91 98403 88990',
-      emergencyPhone: '+91 98403 88999',
-      pincode: pin,
-      area: row.areaName || `PIN ${pin} Sector`,
-      division: row.divisionName || row.division || 'Assigned Division',
-      district: user?.district || 'Salem',
+      email: row.adminEmail || '-',
+      phone: row.adminPhone || '-',
+      emergencyPhone: '-',
+      pincode: row.pincode,
+      area: row.areaName || 'Assigned Zone',
+      division: row.division || row.divisionName || '-',
+      district: row.district || user?.district || 'Salem',
       state: user?.state || 'Tamil Nadu',
-      totalCustomers: row.totalCustomers || 500,
-      population: row.population || '45,000',
+      totalCustomers: row.customerCount || 0,
+      population: row.population || '-',
       status: row.status || 'Active',
-      joinedDate: '15 Jan 2026',
-      qualification: 'Graduate / Diploma in Regional Field Operations',
-      experience: '5+ years in Pincode Level Public Services',
-      specialization: 'Local Community Liaison & Micro-Delivery Networks',
-      address: `Pincode Field Operations Hub, Main Bazaar, PIN: ${pin}, Salem District, Tamil Nadu`
+      joinedDate: row.joinedDate || '-',
+      qualification: row.qualification || '-',
+      experience: row.experience || '-',
+      specialization: row.specialization || '-',
+      address: row.address || `Pincode Hub ${row.pincode}, ${row.district || user?.district || ''}`
     };
   };
 

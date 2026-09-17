@@ -207,27 +207,27 @@ function createAgentActivity(req, res) {
     // Find assigned pincode agent or default
     const pincodeAgent = db.agents.find(a => a.level === 'pincode' && a.pincode === pincode) ||
       db.agents.find(a => a.level === 'pincode') || {
-        id: 'AGT-PIN-01',
-        name: 'Naveen Kumar M',
-        phone: '+91 98940 55103',
+        id: 'AGT-UNASSIGNED',
+        name: 'Unassigned Pincode Agent',
+        phone: '-',
         pincode: pincode
       };
 
     const divAgent = db.agents.find(a => a.level === 'divisional' && a.division === division) || {
-      id: 'AGT-DIV-01',
-      name: 'Rajendran P',
+      id: 'AGT-UNASSIGNED',
+      name: 'Unassigned Divisional Agent',
       division: division
     };
 
     const distAgent = db.agents.find(a => a.level === 'district' && a.district === district) || {
-      id: 'AGT-DST-01',
-      name: 'Karthik Subramanian',
+      id: 'AGT-UNASSIGNED',
+      name: 'Unassigned District Agent',
       district: district
     };
 
     const stAgent = db.agents.find(a => a.level === 'state') || {
-      id: 'AGT-STA-01',
-      name: 'Thirunavukkarasu R',
+      id: 'AGT-UNASSIGNED',
+      name: 'Unassigned State Agent',
       state: state
     };
 

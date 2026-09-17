@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+import { dataService } from '../../services/dataService';
 import {
   Users,
   CreditCard,
@@ -31,25 +32,43 @@ export function PincodeAdminDashboard() {
   const areaName = user?.areaName || 'Salem Town Fort';
   const districtName = user?.district || 'Salem';
 
-  // Scoped metrics for 10 cards model matching the exact dashboard pattern
+  const [summaryData, setSummaryData] = useState(null);
+  const [vendors, setVendors] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    Promise.all([
+      dataService.getDashboardSummary().catch(() => null),
+      dataService.getVendors({ pincode }).catch(() => null)
+    ]).then(([summary, vendorRes]) => {
+      if (!isMounted) return;
+      if (summary?.success) setSummaryData(summary);
+      if (vendorRes?.vendors) setVendors(vendorRes.vendors);
+    });
+    return () => { isMounted = false; };
+  }, [pincode]);
+
+  const metrics = summaryData?.metrics || {};
   const stats = {
-    totalCustomers: 3,
-    membershipCardCustomers: 3,
-    totalVendors: 2,
-    totalOrders: 2,
-    totalBookings: 2,
-    totalJobs: 1,
-    totalTechnicians: 1,
-    totalDeliveryPartners: 2,
-    totalAgents: 1,
-    pendingPayments: 1
+    totalCustomers: metrics.totalCustomers || 0,
+    membershipCardCustomers: (summaryData?.membershipDistribution?.Silver || 0) + (summaryData?.membershipDistribution?.Gold || 0) + (summaryData?.membershipDistribution?.Diamond || 0),
+    totalVendors: vendors.length || metrics.totalVendors || 0,
+    totalOrders: metrics.totalOrders || 0,
+    totalBookings: metrics.totalBookings || 0,
+    totalJobs: metrics.totalJobs || 0,
+    totalTechnicians: metrics.totalTechnicians || 0,
+    totalDeliveryPartners: 0,
+    totalAgents: metrics.totalAgents || 0,
+    pendingPayments: (metrics.pendingAgentPayouts || 0) + (metrics.pendingVendorPayouts || 0) > 0 ? 1 : 0
   };
 
   const donutData = [
-    { name: 'Silver Tier', value: 1, color: '#94a3b8' },
-    { name: 'Gold Tier', value: 1, color: '#f59e0b' },
-    { name: 'Diamond Tier', value: 1, color: '#0ea5e9' }
+    { name: 'Silver Tier', value: summaryData?.membershipDistribution?.Silver || 0, color: '#94a3b8' },
+    { name: 'Gold Tier', value: summaryData?.membershipDistribution?.Gold || 0, color: '#f59e0b' },
+    { name: 'Diamond Tier', value: summaryData?.membershipDistribution?.Diamond || 0, color: '#0ea5e9' }
   ];
+  const totalCards = stats.membershipCardCustomers;
+
 
   return (
     <div className="space-y-6 pb-8">
@@ -266,45 +285,35 @@ export function PincodeAdminDashboard() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div
-              onClick={() => navigate('/pincode-admin/vendors')}
-              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">Sri Murugan Provisions</h4>
-                  <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                    VND-001
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 mt-1">Groceries & Daily Essentials &bull; 15 Dispatched Orders</p>
-              </div>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold">Status: Active</span>
-                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">Rating: 4.8 ★</span>
-              </div>
+          {vendors.length === 0 ? (
+            <div className="p-8 text-center text-slate-400 text-xs">
+              No local stores registered in this pincode
             </div>
-
-            <div
-              onClick={() => navigate('/pincode-admin/vendors')}
-              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-900 dark:text-white text-sm">Salem Supermart</h4>
-                  <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                    VND-002
-                  </span>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {vendors.map(vendor => (
+                <div
+                  key={vendor.id}
+                  onClick={() => navigate('/pincode-admin/vendors')}
+                  className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 hover:border-blue-400 cursor-pointer transition flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-slate-900 dark:text-white text-sm">{vendor.shopName || vendor.name}</h4>
+                      <span className="text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
+                        {vendor.id}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">{vendor.category || 'General Store'} &bull; {vendor.ordersCount || 0} Orders</p>
+                  </div>
+                  <div className="flex items-center gap-2 mt-3">
+                    <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold">Status: {vendor.status || 'Active'}</span>
+                    <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">Rating: {vendor.rating ? `${vendor.rating} ★` : 'N/A'}</span>
+                  </div>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">FMCG Retail & Wholesale &bull; 28 Dispatched Orders</p>
-              </div>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold">Status: Active</span>
-                <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono text-xs font-semibold">Rating: 4.6 ★</span>
-              </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
 
         {/* Membership Cards Donut */}
@@ -333,7 +342,7 @@ export function PincodeAdminDashboard() {
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-              <span className="text-base font-black text-slate-900 dark:text-white">3</span>
+              <span className="text-base font-black text-slate-900 dark:text-white">{totalCards}</span>
               <span className="text-[9px] text-slate-500 font-semibold uppercase">Cards</span>
             </div>
           </div>
@@ -341,15 +350,15 @@ export function PincodeAdminDashboard() {
           <div className="space-y-1.5 text-xs">
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-slate-400"></span>Silver</span>
-              <span className="font-bold text-slate-900 dark:text-white">1</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summaryData?.membershipDistribution?.Silver || 0}</span>
             </div>
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-400"></span>Gold</span>
-              <span className="font-bold text-slate-900 dark:text-white">1</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summaryData?.membershipDistribution?.Gold || 0}</span>
             </div>
             <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyan-400"></span>Diamond</span>
-              <span className="font-bold text-slate-900 dark:text-white">1</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summaryData?.membershipDistribution?.Diamond || 0}</span>
             </div>
           </div>
         </div>

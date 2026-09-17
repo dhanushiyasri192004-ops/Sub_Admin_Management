@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import { dataService } from '../../services/dataService';
 import {
   Building2,
   Layers,
@@ -38,6 +39,30 @@ export function StateAdminDashboard() {
   const { isDark } = useTheme();
   const navigate = useNavigate();
 
+  const [summaryData, setSummaryData] = useState(null);
+  const [districtsCount, setDistrictsCount] = useState(0);
+  const [divisionsCount, setDivisionsCount] = useState(0);
+  const [adminsCount, setAdminsCount] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    Promise.all([
+      dataService.getDashboardSummary().catch(() => null),
+      dataService.getDistricts().catch(() => null),
+      dataService.getDivisions().catch(() => null),
+      dataService.getSubordinateAdmins().catch(() => null)
+    ]).then(([summary, dstRes, divRes, subRes]) => {
+      if (!isMounted) return;
+      if (summary?.success) setSummaryData(summary);
+      if (dstRes?.districts) setDistrictsCount(dstRes.districts.length);
+      if (divRes?.divisions) setDivisionsCount(divRes.divisions.length);
+      if (subRes?.admins) setAdminsCount(subRes.admins.length);
+    });
+    return () => { isMounted = false; };
+  }, []);
+
+  const metrics = summaryData?.metrics || {};
+
   const cardStyle = isDark
     ? 'bg-[#131f37] border-[#1f3358]'
     : 'bg-white border-slate-200/90 shadow-sm';
@@ -46,16 +71,16 @@ export function StateAdminDashboard() {
   const topSummaryCards = [
     {
       label: 'Total Districts',
-      value: '38',
+      value: String(districtsCount),
       icon: Building2,
       path: '/state-admin/districts',
-      highlight: 'Tamil Nadu',
+      highlight: user?.state || 'Tamil Nadu',
       badgeColor: isDark ? 'bg-blue-950/80 border-blue-800 text-blue-400' : 'bg-blue-50 border-blue-100 text-blue-600',
       highlightColor: 'text-blue-600'
     },
     {
       label: 'Total Divisions',
-      value: '128',
+      value: String(divisionsCount),
       icon: Layers,
       path: '/state-admin/divisions',
       highlight: 'Active Zones',
@@ -64,7 +89,7 @@ export function StateAdminDashboard() {
     },
     {
       label: 'Total Pincodes',
-      value: '1,256',
+      value: String(metrics.totalPincodes || 0),
       icon: MapPin,
       path: '/state-admin/pincodes',
       highlight: 'Micro Coverage',
@@ -73,25 +98,25 @@ export function StateAdminDashboard() {
     },
     {
       label: 'Total Customers',
-      value: '12,845',
+      value: String(metrics.totalCustomers || 0),
       icon: Users,
       path: '/state-admin/customers',
-      highlight: '+256 this mo',
+      highlight: 'Registered Base',
       badgeColor: isDark ? 'bg-sky-950/80 border-sky-800 text-sky-400' : 'bg-sky-50 border-sky-100 text-sky-600',
       highlightColor: 'text-emerald-600'
     },
     {
       label: 'Total Vendors',
-      value: '2,365',
+      value: String(metrics.totalVendors || 0),
       icon: Store,
       path: '/state-admin/vendors',
-      highlight: '1,842 Active',
+      highlight: 'Verified Partners',
       badgeColor: isDark ? 'bg-amber-950/80 border-amber-800 text-amber-400' : 'bg-amber-50 border-amber-100 text-amber-600',
       highlightColor: 'text-amber-600'
     },
     {
       label: 'Total Admins',
-      value: '168',
+      value: String(adminsCount),
       icon: ShieldCheck,
       path: '/state-admin/district-admins',
       highlight: 'Nodal Officers',
@@ -102,47 +127,39 @@ export function StateAdminDashboard() {
 
   // 3. Operations Overview (8 items)
   const operationsList = [
-    { label: 'Orders', count: '8,452', subtext: '7,125 Fulfilled', icon: ShoppingBag, path: '/state-admin/orders' },
-    { label: 'Bookings', count: '3,210', subtext: '2,890 Scheduled', icon: CalendarCheck, path: '/state-admin/bookings' },
-    { label: 'Jobs', count: '1,420', subtext: '94 In Progress', icon: Briefcase, path: '/state-admin/jobs' },
-    { label: 'Delivery Partners', count: '485', subtext: '380 On Duty', icon: Truck, path: '/state-admin/delivery-partners' },
-    { label: 'Technicians', count: '320', subtext: '265 Field Ready', icon: Wrench, path: '/state-admin/technicians' },
-    { label: 'Executives', count: '142', subtext: '138 Active', icon: UserCheck, path: '/state-admin/executives' },
-    { label: 'Support Team', count: '64', subtext: '98.4% SLA Met', icon: Headphones, path: '/state-admin/support-team' },
-    { label: 'Agents', count: '1,150', subtext: '920 Subscribed', icon: UserPlus, path: '/state-admin/agents' }
+    { label: 'Orders', count: String(metrics.totalOrders || 0), subtext: 'Orders Fulfilled', icon: ShoppingBag, path: '/state-admin/orders' },
+    { label: 'Bookings', count: String(metrics.totalBookings || 0), subtext: 'Scheduled', icon: CalendarCheck, path: '/state-admin/bookings' },
+    { label: 'Jobs', count: String(metrics.totalJobs || 0), subtext: 'In Progress', icon: Briefcase, path: '/state-admin/jobs' },
+    { label: 'Delivery Partners', count: '0', subtext: 'On Duty', icon: Truck, path: '/state-admin/delivery-partners' },
+    { label: 'Technicians', count: String(metrics.totalTechnicians || 0), subtext: 'Field Ready', icon: Wrench, path: '/state-admin/technicians' },
+    { label: 'Executives', count: String(metrics.totalExecutives || 0), subtext: 'Active', icon: UserCheck, path: '/state-admin/executives' },
+    { label: 'Support Team', count: String(metrics.totalSupportTickets || 0), subtext: 'Tickets Logged', icon: Headphones, path: '/state-admin/support-team' },
+    { label: 'Agents', count: String(metrics.totalAgents || 0), subtext: 'Active Agents', icon: UserPlus, path: '/state-admin/agents' }
   ];
 
   // 4. Finance & Compliance (6 items)
   const financeComplianceList = [
-    { label: 'Pending KYC', value: '24', detail: 'Verifications Due', icon: FileCheck2, alert: true, path: '/state-admin/kyc' },
-    { label: 'Pending Payments', value: '₹3,45,200', detail: '18 Invoices Pending', icon: Wallet, alert: true, path: '/state-admin/payments' },
-    { label: 'Vendor Payments', value: '₹24,58,320', detail: 'Settled this cycle', icon: Store, path: '/state-admin/vendor-payments' },
-    { label: 'Agent Payments', value: '₹4,82,600', detail: 'Commission Payouts', icon: IndianRupee, path: '/state-admin/agent-payments' },
-    { label: 'Pending Payouts', value: '18', detail: 'Batches Queued', icon: CreditCard, path: '/state-admin/payments' },
-    { label: 'Business Reports', value: '42', detail: 'Monthly Statements', icon: BarChart3, path: '/state-admin/reports' }
+    { label: 'Pending KYC', value: String(metrics.totalKYC || 0), detail: 'Verifications Due', icon: FileCheck2, alert: (metrics.totalKYC || 0) > 0, path: '/state-admin/kyc' },
+    { label: 'Pending Payments', value: `₹${((metrics.pendingAgentPayouts || 0) + (metrics.pendingVendorPayouts || 0)).toLocaleString()}`, detail: 'Invoices Pending', icon: Wallet, alert: ((metrics.pendingAgentPayouts || 0) + (metrics.pendingVendorPayouts || 0)) > 0, path: '/state-admin/payments' },
+    { label: 'Vendor Payments', value: `₹${(metrics.totalRevenue || 0).toLocaleString()}`, detail: 'Settled this cycle', icon: Store, path: '/state-admin/vendor-payments' },
+    { label: 'Agent Payments', value: '₹0', detail: 'Commission Payouts', icon: IndianRupee, path: '/state-admin/agent-payments' },
+    { label: 'Pending Payouts', value: '0', detail: 'Batches Queued', icon: CreditCard, path: '/state-admin/payments' },
+    { label: 'Business Reports', value: '0', detail: 'Monthly Statements', icon: BarChart3, path: '/state-admin/reports' }
   ];
 
   // 5. Pending Actions (7 actionable items with count and arrow)
   const pendingActions = [
-    { label: 'District Admin Requests', count: 4, path: '/state-admin/district-admins', icon: Building2 },
-    { label: 'Division Admin Requests', count: 6, path: '/state-admin/division-admins', icon: Layers },
-    { label: 'Pincode Admin Requests', count: 11, path: '/state-admin/pincode-admins', icon: MapPin },
-    { label: 'KYC Verification', count: 24, path: '/state-admin/kyc', icon: FileCheck2, highlight: true },
-    { label: 'Payment Requests', count: 15, path: '/state-admin/payments', icon: IndianRupee, highlight: true },
-    { label: 'Queries', count: 8, path: '/state-admin/queries', icon: CircleHelp },
-    { label: 'Tasks', count: 12, path: '/state-admin/tasks', icon: ClipboardList }
+    { label: 'District Admin Requests', count: 0, path: '/state-admin/district-admins', icon: Building2 },
+    { label: 'Division Admin Requests', count: 0, path: '/state-admin/division-admins', icon: Layers },
+    { label: 'Pincode Admin Requests', count: 0, path: '/state-admin/pincode-admins', icon: MapPin },
+    { label: 'KYC Verification', count: metrics.totalKYC || 0, path: '/state-admin/kyc', icon: FileCheck2, highlight: (metrics.totalKYC || 0) > 0 },
+    { label: 'Payment Requests', count: 0, path: '/state-admin/payments', icon: IndianRupee, highlight: false },
+    { label: 'Queries', count: 0, path: '/state-admin/queries', icon: CircleHelp },
+    { label: 'Tasks', count: 0, path: '/state-admin/tasks', icon: ClipboardList }
   ];
 
-  // 6. Recent Activities (Latest 7 activities)
-  const recentActivities = [
-    { title: 'New district admin assigned', desc: 'Sundar Raman appointed for Coimbatore District', time: '10:15 AM', icon: ShieldCheck },
-    { title: 'New vendor registered', desc: '"Sri Murugan Provisions" onboarded in Salem North', time: '11:30 AM', icon: Store },
-    { title: 'Pincode updated', desc: 'Territory boundary updated for PIN: 636004 Gugai', time: '01:20 PM', icon: MapPin },
-    { title: 'KYC approved', desc: 'Verified GST & Aadhaar for Viji Enterprises', time: '02:45 PM', icon: FileCheck2 },
-    { title: 'Payment completed', desc: 'Batch settlement of ₹1,45,200 disbursed to merchants', time: '03:10 PM', icon: CheckCircle2 },
-    { title: 'New customer registered', desc: 'Arun Kumar joined Silver Card Membership', time: '03:50 PM', icon: UserPlus },
-    { title: 'Query resolved', desc: 'Dispute ticket #QR-8105 POS reader error closed', time: '04:15 PM', icon: CircleHelp }
-  ];
+  // 6. Recent Activities
+  const recentActivities = [];
 
   // 7. Quick Actions (6 compact buttons)
   const quickActionButtons = [
@@ -384,31 +401,37 @@ export function StateAdminDashboard() {
               </span>
             </div>
 
-            <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
-              {recentActivities.map((act, idx) => {
-                const Icon = act.icon;
-                return (
-                  <div key={idx} className="py-2.5 first:pt-0 last:pb-0 flex items-start justify-between gap-3 text-xs">
-                    <div className="flex items-start gap-2.5 min-w-0">
-                      <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 mt-0.5 shrink-0">
-                        <Icon className="w-3.5 h-3.5" />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                          {act.title}
+            {recentActivities.length === 0 ? (
+              <div className="py-8 text-center text-slate-400 text-xs">
+                No recent activity records found
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                {recentActivities.map((act, idx) => {
+                  const Icon = act.icon;
+                  return (
+                    <div key={idx} className="py-2.5 first:pt-0 last:pb-0 flex items-start justify-between gap-3 text-xs">
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 mt-0.5 shrink-0">
+                          <Icon className="w-3.5 h-3.5" />
                         </div>
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                          {act.desc}
+                        <div className="min-w-0">
+                          <div className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                            {act.title}
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                            {act.desc}
+                          </div>
                         </div>
                       </div>
+                      <span className="text-[10px] font-mono text-slate-400 dark:text-slate-400 shrink-0 mt-0.5">
+                        {act.time}
+                      </span>
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400 dark:text-slate-400 shrink-0 mt-0.5">
-                      {act.time}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 

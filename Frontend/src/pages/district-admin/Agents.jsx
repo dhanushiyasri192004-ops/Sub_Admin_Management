@@ -42,48 +42,7 @@ const LEVEL_CONFIGS = {
     tableTitle: 'District Agent Directory',
     tableSubtitle: 'Territorial lead agents managing division clusters and district customer onboarding',
     exportFile: 'district_agents.csv',
-    defaultData: [
-      {
-        id: 'AGT-DST-01',
-        name: 'Karthik Subramanian',
-        phone: '+91 98401 22345',
-        email: 'karthik.district@domain.com',
-        level: 'district',
-        role: 'District Agent',
-        district: 'Salem',
-        jurisdiction: 'Salem District Jurisdiction',
-        assignedArea: 'Salem North, South & Attur Divisions',
-        supervisorName: 'Thirunavukkarasu R (State Agent)',
-        subordinatesCount: 6,
-        totalReferrals: 215,
-        activeSubscribers: 180,
-        vendorOnboardings: 64,
-        walletBalance: 16400,
-        totalEarned: 89000,
-        status: 'Active',
-        joinedDate: '10 Feb 2024'
-      },
-      {
-        id: 'AGT-DST-02',
-        name: 'Venkatesh Babu',
-        phone: '+91 98401 22346',
-        email: 'venkat.cbe@domain.com',
-        level: 'district',
-        role: 'District Agent',
-        district: 'Salem',
-        jurisdiction: 'Salem Peripheral & Mettur',
-        assignedArea: 'Mettur & Omalur Divisions',
-        supervisorName: 'Thirunavukkarasu R (State Agent)',
-        subordinatesCount: 5,
-        totalReferrals: 195,
-        activeSubscribers: 160,
-        vendorOnboardings: 58,
-        walletBalance: 14200,
-        totalEarned: 78500,
-        status: 'Active',
-        joinedDate: '15 Feb 2024'
-      }
-    ]
+    defaultData: []
   },
   divisional: {
     title: 'Divisional Agents',
@@ -95,50 +54,7 @@ const LEVEL_CONFIGS = {
     tableTitle: 'Divisional Agent Roster',
     tableSubtitle: 'Cluster supervisory agents managing ground activations, pincode agents & KYC reviews',
     exportFile: 'divisional_agents.csv',
-    defaultData: [
-      {
-        id: 'AGT-DIV-01',
-        name: 'Rajendran P',
-        phone: '+91 98940 77101',
-        email: 'rajendran.div@domain.com',
-        level: 'divisional',
-        role: 'Divisional Agent',
-        district: 'Salem',
-        division: 'Salem North',
-        jurisdiction: 'Salem North Division',
-        assignedArea: 'PIN: 636001, 636002',
-        supervisorName: 'Karthik Subramanian (District Agent)',
-        subordinatesCount: 3,
-        totalReferrals: 110,
-        activeSubscribers: 88,
-        vendorOnboardings: 32,
-        walletBalance: 8900,
-        totalEarned: 52000,
-        status: 'Active',
-        joinedDate: '01 Apr 2025'
-      },
-      {
-        id: 'AGT-DIV-02',
-        name: 'Anand Kumar V',
-        phone: '+91 98940 77102',
-        email: 'anand.div@domain.com',
-        level: 'divisional',
-        role: 'Divisional Agent',
-        district: 'Salem',
-        division: 'Salem South',
-        jurisdiction: 'Salem South Division',
-        assignedArea: 'PIN: 636003, 636004',
-        supervisorName: 'Karthik Subramanian (District Agent)',
-        subordinatesCount: 2,
-        totalReferrals: 98,
-        activeSubscribers: 74,
-        vendorOnboardings: 29,
-        walletBalance: 7600,
-        totalEarned: 46000,
-        status: 'Active',
-        joinedDate: '18 Apr 2025'
-      }
-    ]
+    defaultData: []
   },
   pincode: {
     title: 'Pincode Agents',
@@ -150,96 +66,7 @@ const LEVEL_CONFIGS = {
     tableTitle: 'Pincode Agent Field Force',
     tableSubtitle: 'Frontline agents driving card enrollments, local vendor onboarding, and KYC verification',
     exportFile: 'pincode_agents.csv',
-    defaultData: [
-      {
-        id: 'AGT-PIN-01',
-        name: 'Vigneshwaran K',
-        phone: '+91 98940 88200',
-        email: 'vignesh.pincode@gmail.com',
-        level: 'pincode',
-        role: 'Pincode Agent',
-        district: 'Salem',
-        division: 'Salem North',
-        pincode: '636001',
-        jurisdiction: 'PIN: 636001 (Salem Fort)',
-        assignedArea: 'Salem Town Fort & Bazaar',
-        supervisorName: 'Rajendran P (Divisional Agent)',
-        subordinatesCount: 0,
-        totalReferrals: 94,
-        activeSubscribers: 72,
-        vendorOnboardings: 24,
-        walletBalance: 8200,
-        totalEarned: 48000,
-        status: 'Active',
-        joinedDate: '28 Jul 2024'
-      },
-      {
-        id: 'AGT-PIN-02',
-        name: 'Dinesh Karthik',
-        phone: '+91 98940 88201',
-        email: 'dinesh.pincode@gmail.com',
-        level: 'pincode',
-        role: 'Pincode Agent',
-        district: 'Salem',
-        division: 'Salem North',
-        pincode: '636002',
-        jurisdiction: 'PIN: 636002 (Shevapet)',
-        assignedArea: 'Shevapet & Market Area',
-        supervisorName: 'Rajendran P (Divisional Agent)',
-        subordinatesCount: 0,
-        totalReferrals: 82,
-        activeSubscribers: 61,
-        vendorOnboardings: 17,
-        walletBalance: 6500,
-        totalEarned: 41000,
-        status: 'Active',
-        joinedDate: '05 Aug 2024'
-      },
-      {
-        id: 'AGT-PIN-03',
-        name: 'Pravin Chandran',
-        phone: '+91 98940 88202',
-        email: 'pravin.pincode@gmail.com',
-        level: 'pincode',
-        role: 'Pincode Agent',
-        district: 'Salem',
-        division: 'Salem South',
-        pincode: '636003',
-        jurisdiction: 'PIN: 636003 (Ammapet)',
-        assignedArea: 'Ammapet Colony Hub',
-        supervisorName: 'Anand Kumar V (Divisional Agent)',
-        subordinatesCount: 0,
-        totalReferrals: 76,
-        activeSubscribers: 58,
-        vendorOnboardings: 15,
-        walletBalance: 5900,
-        totalEarned: 37500,
-        status: 'Active',
-        joinedDate: '12 Aug 2024'
-      },
-      {
-        id: 'AGT-PIN-04',
-        name: 'Mohamed Asif',
-        phone: '+91 98940 88203',
-        email: 'asif.pincode@gmail.com',
-        level: 'pincode',
-        role: 'Pincode Agent',
-        district: 'Salem',
-        division: 'Salem South',
-        pincode: '636004',
-        jurisdiction: 'PIN: 636004 (Gugai)',
-        assignedArea: 'Gugai Handloom & Industrial',
-        supervisorName: 'Anand Kumar V (Divisional Agent)',
-        subordinatesCount: 0,
-        totalReferrals: 68,
-        activeSubscribers: 52,
-        vendorOnboardings: 14,
-        walletBalance: 4800,
-        totalEarned: 31000,
-        status: 'Active',
-        joinedDate: '20 Aug 2024'
-      }
-    ]
+    defaultData: []
   }
 };
 
@@ -280,19 +107,22 @@ export function DistrictAgents({ level = 'district' }) {
     setLoading(true);
     try {
       const res = await dataService.getAgents({ district, level: activeLevel });
-      if (res.success && res.agents && res.agents.length > 0) {
+      if (res.success && res.agents) {
         setAgents(res.agents);
       } else {
-        setAgents(config.defaultData);
+        setAgents([]);
       }
 
       const actRes = await dataService.getAgentActivities({ district });
       if (actRes.success && actRes.activities) {
         setActivities(actRes.activities);
+      } else {
+        setActivities([]);
       }
     } catch (err) {
       console.error('Error loading district agent data:', err);
-      setAgents(config.defaultData);
+      setAgents([]);
+      setActivities([]);
     } finally {
       setLoading(false);
     }

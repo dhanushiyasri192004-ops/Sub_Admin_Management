@@ -350,13 +350,13 @@ export function VendorDetailsModal({ isOpen, onClose, vendor, onVendorUpdated })
                     <span>Pincode Admin</span>
                   </div>
                   <div className="font-bold text-slate-900 dark:text-white truncate">
-                    {assignedTeam.pincodeAdmin?.name || 'Priya Narayanan'}
+                    {assignedTeam.pincodeAdmin?.name || 'Unassigned'}
                   </div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                    {assignedTeam.pincodeAdmin?.phone || '+91 98765 43213'}
+                    {assignedTeam.pincodeAdmin?.phone || '-'}
                   </div>
                   <div className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
-                    {assignedTeam.pincodeAdmin?.email || 'admin@forgeindia.in'}
+                    {assignedTeam.pincodeAdmin?.email || '-'}
                   </div>
                 </div>
 
@@ -367,13 +367,13 @@ export function VendorDetailsModal({ isOpen, onClose, vendor, onVendorUpdated })
                     <span>Pincode Manager</span>
                   </div>
                   <div className="font-bold text-slate-900 dark:text-white truncate">
-                    {assignedTeam.pincodeManager?.name || 'Saravanan Muthuraj'}
+                    {assignedTeam.pincodeManager?.name || 'Unassigned'}
                   </div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                    {assignedTeam.pincodeManager?.phone || '+91 98409 66001'}
+                    {assignedTeam.pincodeManager?.phone || '-'}
                   </div>
                   <div className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
-                    {assignedTeam.pincodeManager?.email || 'manager@forgeindia.in'}
+                    {assignedTeam.pincodeManager?.email || '-'}
                   </div>
                 </div>
 
@@ -384,13 +384,13 @@ export function VendorDetailsModal({ isOpen, onClose, vendor, onVendorUpdated })
                     <span>Pincode Agent</span>
                   </div>
                   <div className="font-bold text-slate-900 dark:text-white truncate">
-                    {assignedTeam.pincodeAgent?.name || 'Naveen Kumar M'}
+                    {assignedTeam.pincodeAgent?.name || 'Unassigned'}
                   </div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                    {assignedTeam.pincodeAgent?.phone || '+91 98940 55103'}
+                    {assignedTeam.pincodeAgent?.phone || '-'}
                   </div>
                   <div className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
-                    {assignedTeam.pincodeAgent?.email || 'agent@gmail.com'}
+                    {assignedTeam.pincodeAgent?.email || '-'}
                   </div>
                 </div>
               </div>

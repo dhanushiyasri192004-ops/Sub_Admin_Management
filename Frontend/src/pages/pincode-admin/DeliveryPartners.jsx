@@ -21,65 +21,7 @@ export function PincodeDeliveryPartners() {
   const [selectedPartner, setSelectedPartner] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-  const [partners, setPartners] = useState([
-    {
-      id: `DEL-${pincode}-01`,
-      name: 'Ravi Teja',
-      phone: '+91 98405 11223',
-      vehicleType: 'Motorcycle',
-      registrationNumber: 'TN-30-AB-1234',
-      district: districtName,
-      pincode: pincode,
-      rating: 4.8,
-      totalTrips: 342,
-      shift: 'On Duty',
-      status: 'Active',
-      deliveryStatus: 'In Transit (ORD-2026-881)',
-      verificationStatus: 'Verified',
-      activeDeliveries: 2,
-      recentDeliveries: [
-        { orderId: 'ORD-2026-881', customer: 'Deepak Raj', destination: `Fairlands, Salem (${pincode})`, time: '10:45 AM Today', status: 'In Transit' }
-      ]
-    },
-    {
-      id: `DEL-${pincode}-02`,
-      name: 'Manoj Kumar',
-      phone: '+91 98405 44556',
-      vehicleType: 'Electric Scooter',
-      registrationNumber: 'TN-30-CD-5678',
-      district: districtName,
-      pincode: pincode,
-      rating: 4.6,
-      totalTrips: 218,
-      shift: 'Available',
-      status: 'Active',
-      deliveryStatus: 'Idle - Ready for Dispatch',
-      verificationStatus: 'Verified',
-      activeDeliveries: 0,
-      recentDeliveries: [
-        { orderId: 'ORD-2026-872', customer: 'Kavitha R', destination: `Suramangalam, Salem (${pincode})`, time: '08:30 AM Today', status: 'Delivered' }
-      ]
-    },
-    {
-      id: `DEL-${pincode}-03`,
-      name: 'Suresh Kumar',
-      phone: '+91 98405 33445',
-      vehicleType: 'Light Commercial Van',
-      registrationNumber: 'TN-30-JK-7890',
-      district: districtName,
-      pincode: pincode,
-      rating: 4.5,
-      totalTrips: 180,
-      shift: 'Offline',
-      status: 'Inactive',
-      deliveryStatus: 'Off Duty',
-      verificationStatus: 'Verified',
-      activeDeliveries: 0,
-      recentDeliveries: [
-        { orderId: 'ORD-2026-750', customer: 'Anitha S', destination: `Ammapet, Salem (${pincode})`, time: '02 Mar 2026', status: 'Delivered' }
-      ]
-    }
-  ]);
+  const [partners, setPartners] = useState([]);
 
   const kpiStats = useMemo(() => {
     const totalPartners = partners.length;

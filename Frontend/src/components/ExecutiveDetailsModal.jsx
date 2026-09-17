@@ -25,49 +25,24 @@ export function ExecutiveDetailsModal({ isOpen, onClose, executive }) {
 
   if (!executive) return null;
 
-  const execId = executive.id || 'EXEC-201';
+  const execId = executive.id || '-';
   const name = executive.name || 'Executive';
-  const phone = executive.phone || '+91 96550 00000';
-  const email = executive.email || 'executive@vendor.com';
+  const phone = executive.phone || '-';
+  const email = executive.email || '-';
   const type = executive.type || (executive.role?.includes('Travel') ? 'Travel Executive' : 'Stay Executive');
-  const vendorName = executive.vendorName || executive.vendor || 'Authorized Vendor';
-  const shopName = executive.shopName || executive.shop || 'Vendor Enterprise';
-  const district = executive.district || 'Salem';
-  const division = executive.division || 'Salem North';
-  const pincode = executive.pincode || '636001';
-  const activeBookings = executive.activeBookings ?? (executive.status === 'Active' ? 4 : 0);
-  const completedBookings = executive.completedBookings ?? (executive.merchantsOnboarded ? executive.merchantsOnboarded * 3 : 88);
+  const vendorName = executive.vendorName || executive.vendor || '-';
+  const shopName = executive.shopName || executive.shop || '-';
+  const district = executive.district || '-';
+  const division = executive.division || '-';
+  const pincode = executive.pincode || '-';
+  const activeBookings = executive.activeBookings ?? 0;
+  const completedBookings = executive.completedBookings ?? (executive.merchantsOnboarded ? executive.merchantsOnboarded * 3 : 0);
   const totalBookings = (Number(activeBookings) || 0) + (Number(completedBookings) || 0);
   const status = executive.status || 'Active';
 
   const isStay = type.toLowerCase().includes('stay');
 
-  const recentBookings = executive.recentBookings && executive.recentBookings.length > 0 ? executive.recentBookings : [
-    {
-      bookingId: `BKG-2026-${Math.floor(800 + Math.random() * 100)}`,
-      customer: 'Deepak Raj',
-      roomOrTrip: isStay ? 'Deluxe Executive Suite Room #302' : 'Airport Express Pickup - Sedan',
-      dates: isStay ? '10 Mar - 12 Mar 2026' : 'Today, 03:30 PM',
-      amount: isStay ? 4800 : 2200,
-      status: 'Confirmed'
-    },
-    {
-      bookingId: `BKG-2026-${Math.floor(750 + Math.random() * 50)}`,
-      customer: 'Swathi Radhakrishnan',
-      roomOrTrip: isStay ? 'Premium King Bed Studio #204' : 'Outstation Two-Way Trip (Salem - Yercaud)',
-      dates: isStay ? '05 Mar - 07 Mar 2026' : '05 Mar 2026',
-      amount: isStay ? 3600 : 4500,
-      status: 'Completed'
-    },
-    {
-      bookingId: `BKG-2026-${Math.floor(700 + Math.random() * 50)}`,
-      customer: 'Vignesh Kumar',
-      roomOrTrip: isStay ? 'Standard Double AC Room #108' : 'Corporate Hourly City Rental (8 hrs / 80 km)',
-      dates: isStay ? '01 Mar - 03 Mar 2026' : '02 Mar 2026',
-      amount: isStay ? 2400 : 3100,
-      status: 'Completed'
-    }
-  ];
+  const recentBookings = executive.recentBookings && executive.recentBookings.length > 0 ? executive.recentBookings : [];
 
   return (
     <Modal
@@ -288,30 +263,38 @@ export function ExecutiveDetailsModal({ isOpen, onClose, executive }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                {recentBookings.map((bkg, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
-                    <td className="py-3 pl-5 pr-4 font-mono font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
-                      {bkg.bookingId}
-                    </td>
-                    <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
-                      {bkg.customer}
-                    </td>
-                    <td className="py-3 px-4 text-slate-700 dark:text-slate-200">
-                      <div className="truncate max-w-[220px]" title={bkg.roomOrTrip}>
-                        {bkg.roomOrTrip}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">
-                      {bkg.dates}
-                    </td>
-                    <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
-                      ₹{bkg.amount?.toLocaleString()}
-                    </td>
-                    <td className="py-3 pl-4 pr-5 text-right whitespace-nowrap">
-                      <StatusBadge status={bkg.status} />
+                {recentBookings.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="py-6 text-center text-slate-400 text-xs">
+                      No recent bookings or operations recorded
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  recentBookings.map((bkg, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                      <td className="py-3 pl-5 pr-4 font-mono font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
+                        {bkg.bookingId}
+                      </td>
+                      <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
+                        {bkg.customer}
+                      </td>
+                      <td className="py-3 px-4 text-slate-700 dark:text-slate-200">
+                        <div className="truncate max-w-[220px]" title={bkg.roomOrTrip}>
+                          {bkg.roomOrTrip}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">
+                        {bkg.dates}
+                      </td>
+                      <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
+                        ₹{bkg.amount?.toLocaleString()}
+                      </td>
+                      <td className="py-3 pl-4 pr-5 text-right whitespace-nowrap">
+                        <StatusBadge status={bkg.status} />
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
